@@ -1,0 +1,20 @@
+{% extends './StudentNavBar.html' %}
+{% load static %}
+{% block content %}
+{% for message in messages %}
+<p id="messages">{{message}}</p>
+{% endfor %}
+<section id="hero" class="hero d-flex align-items-center">
+    <div class="container">
+        <div class="text-center">
+          <h1 data-aos="fade-up">Welcome <span style="color: hsla(157, 74%, 43%, 0.993);">{{request.user}}</span></h1>
+          <h5><span class="text-muted fw-normal ms-2">At your favorite place to track your internship process</span></h5>
+            <div class="text-center mt-3">
+                <a href="{% url 'internappform'%}" class="button btn btn-dark me-2 ms-2 mt-1 pt-1 px-4 rounded-pill">Create internship application</a>
+              </a>
+            </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

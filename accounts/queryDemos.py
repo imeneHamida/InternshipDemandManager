@@ -1,0 +1,1 @@
+apps = InternshipApp.objects.all()
