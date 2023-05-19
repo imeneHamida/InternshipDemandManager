@@ -1,5 +1,5 @@
-{% extends './StudentNavBar.html' %}
-
+{% extends './SupervisorNavBar.html' %}
+{% load static %}
 {% block content %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">  
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css" integrity="sha512-pVCM5+SN2+qwj36KonHToF2p1oIvoU3bsqxphdOIWMYmgr4ZqD3t5DjKvvetKhXGc/ZG5REYTT6ltKfExEei/Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -41,7 +41,8 @@
                                 <th scope="col">Department</th>
                                 <th scope="col">Student Card Number</th>
                                 <th scope="col">Diplome</th>
-                                <th scope="col" style="width: 100px;">Action</th>
+                                <th scope="col" style="width: 50px;"></th>
+                                <th scope="col" style="width: 150px;">Action</th>
                                 <th scope="col"> </th>
                             </tr>
                         </thead>
@@ -96,13 +97,119 @@
                                 <td>{{i.studentdep}}</td>
                                 <td>{{i.studentCard}}</td>
                                 <td>{{i.prepDeplome}}</td>
+                                {% if i.approvedBySupervisor == True %}
                                 <td>
-                                    <form action="{% url 'ApprovedBySupervisor' i.id %}" method="POST">{% csrf_token %}<button type="submit" class="btn btn-success">Approve</button></form>
+                                    <form action="{% url 'StudentRating' i.id %}" method="POST">{% csrf_token %}<button type="submit" class="btn btn-outline-success">Rate</button></form>
                                 </td>
                                 <td>
-                                    <form action="{% url 'DeclinedBySupervisor' i.id %}" method="POST">{% csrf_token %}<button type="submit" class="btn btn-outline-danger me-0" data-bs-toggle="modal" data-bs-target="#exampleModal">Decline</button></form>
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#Attend">
+                                        Take Presence
+                                      </button>
+                                  <!-- Modal -->
+                                  <div class="modal fade" id="Attend" tabindex="-1" aria-labelledby="AttendLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="AttendLabel">Confirmation Message</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{% url 'InternIsNotpresent' i.id %}" method="POST">
+                                                {% csrf_token %}
+                                                <form action="{% url 'InternIspresent' i.id %}" method="POST">
+                                                    {% csrf_token %}
+                                                    <div class="row">
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                        <div id="date-picker-example" class="md-form md-outline input-with-post-icon datepicker" inline="true">
+                                                            <label for="example">The day:</label>
+                                                            <input data-provide="datepicker" placeholder="Select date" name="internshipDay" type="text" id="example" class="form-control" data-date-format="yyyy-mm-dd">
+                                                            <i class="fas fa-calendar input-prefix"></i>
+                                                          </div></div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                        <label for="Totalworkinghours">Total working hours:</label>
+                                                        <input type="number" class="form-control" id="Totalworkinghours" placeholder="Hours" name="workingHours" min="0" max="8">
+                                                        </div>
+                                                    </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="exampleFormControlTextarea1">Observation:</label>
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Text.." name="observation"></textarea>
+                                                      </div>
+                                                    <div class="d-flex align-items-center">
+                                                        <span>Was the intern..?</span>
+                                                        <button type="submit" class="btn btn-success ms-2 me-3">Present</button>
+                                                </form>
+                                                <button type="submit" class="btn btn-danger">Absent</button></div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            <!-- End Modal -->
                                 </td>
+                                <td>
+                                    <form action="{% url 'Certificate' i.id %}" method="POST">{% csrf_token %}<button type="submit" class="btn btn-success">Print Certificate</button></form>
+                                </td>
+                                {% else %}
+                                <td>
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#myModal">
+                                        Approve
+                                      </button>
+                                  <!-- Modal -->
+                                  <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="myModalLabel">Confirmation Message</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                        By approving this demand, are you certain that you want to proceed with creating a supervisor account for <b>"{{i.sprvisorName}}"</b> ?
+                                        </div>
+                                        <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <form action="{% url 'ApprovedBySupervisor' i.id %}" method="POST">{% csrf_token %}<button type="submit" class="btn btn-success">Confirm</button></form>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            <!-- End Modal -->
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#Decline">
+                                        Decline
+                                      </button>
+                                  <!-- Modal -->
+                                  <div class="modal fade" id="Decline" tabindex="-1" aria-labelledby="DeclineLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="DeclineLabel">Confirmation Message</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                        <form action="{% url 'DeclinedBySupervisor' i.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <div class="form-outline mb-4">
+                                            <label class="mb-2">Tell applicant what to modify:</label>
+                                            <textarea class="form-control" name="RejectionReason" rows="5" placeholder="Write the rejection reason.." required></textarea>
+                                        </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Send Reason</button></form>
+                                    </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            <!-- End Modal -->
+                                </td>
+                                <td>
+                                    <form action="{% url 'DefinitelyRejectBySupervisor' i.id %}" method="POST">{% csrf_token %}<button type="submit" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Definitely reject</button></form>
+                             </td>{% endif %}
                             </tr>
                             {% endfor %}{% endif %}
-
 {% endblock %}

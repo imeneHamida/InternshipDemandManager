@@ -1,5 +1,6 @@
-from .forms import CreationUserForm,CreationIntenApp
+from .forms import CreationUserForm,CreationIntenApp,Rating,TakePresence
 from django.contrib import messages
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import UpdateView
 from .decorators import admin_redirect,unauthenticated_user,allowed_users
@@ -8,8 +9,15 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from .email_utils import send_account_details_email
+from django.conf import settings
+from .utils import render_to_pdf
 from django.contrib.auth import authenticate,login,logout
 from .models import *
+from django.views import View
+from io import BytesIO
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa 
 
 # Create your views here.
 
@@ -74,15 +82,16 @@ def ApprovedByAdmin(request, pk):
     Supervisor.objects.create(fullname=supusername,email=supemail,password=suppassword)
     app.internMaster = user
     app.save()
-    send_account_details_email(user.email, user.username, user.password)
+    send_account_details_email(supemail, supusername, suppassword)
     apps = InternshipApp.objects.all()
     return render(request,"AdminHome.html",{'appslist' : apps})
 
-#@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['admin'])
 @login_required(login_url='Signin')
 def DeclinedByAdmin(request, pk):
     app = InternshipApp.objects.get(id=pk)
     app.approvedByMaster = False
+    app.RejectionReason = request.POST.get("RejectionReason")
     app.save()
     apps = InternshipApp.objects.all()
     return render(request,"AdminHome.html",{'appslist' : apps})
@@ -95,6 +104,146 @@ def ApprovedBySupervisor(request, pk):
     app.save()
     apps = InternshipApp.objects.all()
     return render(request,"SupervisorHome.html",{'appslist' : apps})
+
+def render_to_pdf(request, pk):
+    app = InternshipApp.objects.get(id=pk)
+    marks = Marks.objects.filter(intern= app.applicant)
+    template = get_template('Certificate.html')
+    context = {'marks': marks} 
+    html = template.render(context)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
+
+    # Checking if PDF generation was successful
+    if not pdf.err:
+        # Set the appropriate response headers for PDF
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="Certification.pdf"'
+        # Write the PDF file to the response
+        response.write(result.getvalue())
+        return response
+    # Return an error response if PDF generation failed
+    return HttpResponse('Error generating PDF', status=500)
+
+#class Certificate(View):
+    #def get(self, request, *args, **kwargs):
+        #pdf = render_to_pdf('Certificate.html')
+        #return HttpResponse(pdf, content_type='application/pdf')
+
+@allowed_users(allowed_roles=['Supervisor'])
+@login_required(login_url='Signin')
+def StudentRating(request, pk):
+    app = InternshipApp.objects.get(id=pk)
+    appintern = app.applicant 
+    form = Rating()
+    if request.method =='POST':
+        form = Rating(request.POST)
+        if form.is_valid():
+            marks_instance = form.save(commit=False)
+            marks_instance.internMaster = request.user
+            marks_instance.intern = appintern
+            marks_instance.prepDeplome = app.prepDeplome
+            marks_instance.duree = app.duree
+            marks_instance.strtDate = app.strtDate
+            marks_instance.endDate = app.endDate
+            marks_instance.companyName = app.companyName
+            marks_instance.companyAdrss = app.companyAdrss
+            app.rated = True
+            app.save()
+            marks_instance.save()
+            return redirect('SupervisorHome')
+    context = {'form': form}
+    return render(request,"Marks.html", context)
+
+
+@allowed_users(allowed_roles=['Supervisor','univStudents'])
+@login_required(login_url='Signin')
+def viewRating(request, pk):
+    app = InternshipApp.objects.get(id=pk)
+    appintern = app.applicant
+    marks = Marks.objects.filter(intern=app.applicant)
+    
+    supervisor_group = Group.objects.get(name='Supervisor')
+    
+    if supervisor_group in request.user.groups.all():
+        template = "SupervisorHome.html"
+    else:
+        template = "MyApplications.html"
+    
+    context = {'marks': marks}
+    return render(request, template, context)
+
+@allowed_users(allowed_roles=['Supervisor'])
+@login_required(login_url='Signin')
+def InternIspresent(request, pk):
+    app = InternshipApp.objects.get(id=pk)
+    appintern = app.applicant 
+    supervsr = request.user
+    prepDeplome = app.prepDeplome
+    companyAdrss = app.companyAdrss
+    strtDate = app.strtDate
+    endDate = app.endDate
+    if request.method =='POST':
+        attendance = Attendence.objects.create(internMaster = supervsr,
+        intern = appintern,
+        prepDeplome = prepDeplome,
+        companyAdrss = companyAdrss,
+        strtDate = strtDate,
+        endDate = endDate
+        )
+        attendance.isPresent = True
+        attendance.internshipDay = request.POST.get("internshipDay")
+        attendance.workingHours = request.POST.get("workingHours")
+        attendance.observation = request.POST.get("internshipDay")
+        attendance.save()
+        return redirect('SupervisorHome')
+    apps = InternshipApp.objects.all()
+    return render(request,"SupervisorHome.html",{'appslist' : apps})
+
+@allowed_users(allowed_roles=['Supervisor'])
+@login_required(login_url='Signin')
+def InternIsNotpresent(request, pk):
+    app = InternshipApp.objects.get(id=pk)
+    appintern = app.applicant 
+    supervsr = request.user
+    prepDeplome = app.prepDeplome
+    companyAdrss = app.companyAdrss
+    strtDate = app.strtDate
+    endDate = app.endDate
+    if request.method =='POST':
+        attendance = Attendence.objects.create(internMaster = supervsr,
+        intern = appintern,
+        prepDeplome = prepDeplome,
+        companyAdrss = companyAdrss,
+        strtDate = strtDate,
+        endDate = endDate
+        )
+        attendance.isPresent = False
+        attendance.internshipDay = request.POST.get("internshipDay")
+        attendance.workingHours = request.POST.get("workingHours")
+        attendance.observation = request.POST.get("observation")
+        attendance.save()
+        return redirect('SupervisorHome')
+    apps = InternshipApp.objects.all()
+    return render(request,"SupervisorHome.html",{'appslist' : apps})
+
+@allowed_users(allowed_roles=['Supervisor'])
+@login_required(login_url='Signin')
+def DefinitelyRejectBySupervisor(request, pk):
+    app = InternshipApp.objects.get(id=pk)
+    app.SuprvDefinitelyReject = True
+    app.save()
+    apps = InternshipApp.objects.all()
+    return render(request,"SupervisorHome.html",{'appslist' : apps})
+
+@allowed_users(allowed_roles=['admin'])
+@login_required(login_url='Signin')
+def DefinitelyRejectByAdmin(request, pk):
+    app = InternshipApp.objects.get(id=pk)
+    app.MasterDefinitelyReject = True
+    app.save()
+    apps = InternshipApp.objects.all()
+    return render(request,"AdminHome.html",{'appslist' : apps})
 
 @allowed_users(allowed_roles=['Supervisor'])
 @login_required(login_url='Signin')
@@ -116,7 +265,8 @@ def AdminHome(request):
 @login_required(login_url='Signin')
 def SupervisorHome(request):
     supervisors = InternshipApp.objects.filter(internMaster = request.user)
-    return render(request,"SupervisorHome.html",{'appslist' : supervisors})
+    total = supervisors.count()
+    return render(request,"SupervisorHome.html",{'appslist' : supervisors ,'total_apps' : total})
 
 @allowed_users(allowed_roles=['univStudents'])
 @login_required(login_url='Signin')
@@ -140,7 +290,8 @@ def StudentHome(request):
 @login_required(login_url='Signin')
 @allowed_users(allowed_roles=['univStudents'])
 def StudentProfile(request):
-    context = { }
+    Details = request.user.Student.objects.all
+    context = { 'Details': Details }
     return render(request,"StudentProfile.html", context)
 
 @login_required(login_url='Signin')
@@ -148,7 +299,9 @@ def StudentProfile(request):
 def MyApplications(request):
     apps = InternshipApp.objects.filter(applicant = request.user)
     total_apps = apps.count()
-    return render(request,"MyApplications.html", { 'myapps': apps , 'total_apps': total_apps})
+    marks = Marks.objects.filter(intern= request.user)
+    return render(request,"MyApplications.html", { 'myapps': apps , 'total_apps': total_apps, 'marks': marks})
+
 
 
 def LogoutUser(request):
@@ -195,7 +348,7 @@ def Signup(request):
             user.save()
             Student_group = Group.objects.get(name='univStudents') 
             user.groups.add(Student_group)
-            Student.objects.create(username=user,email=email,set_password=password)
+            Student.objects.create(username=user)
             login(request, user)
             return redirect('Signin')
             messages.success(request, "Account Created successfully")
@@ -248,8 +401,9 @@ def CreateSupervisor(request):
             supervisor_group = Group.objects.get(name='Supervisor') 
             user.groups.add(supervisor_group)
             Supervisor.objects.create(fullname=user,email=email,password=password)
-            your_model_instance = InternshipApp(internMaster=user)
-            your_model_instance.save()
+            #your_model_instance = InternshipApp(internMaster=user)--the right thing to do instead is to write:
+            #InternshipApp.objects.create(internMaster=user)
+            #your_model_instance.save()--to remove
             messages.success(request, "Account Created successfully")
     context = {'form': form }
     return render(request, "CreateSupervisor.html", context)

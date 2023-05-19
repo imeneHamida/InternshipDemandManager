@@ -3,6 +3,7 @@ from django.forms import ModelForm
 from .models import *
 from django.forms import ModelForm, TextInput, EmailInput
 
+
 class CreationUserForm(forms.Form):
     username = forms.CharField(
         max_length=9,
@@ -51,19 +52,34 @@ class CreationIntenApp(ModelForm):
         'endDate': forms.DateInput(attrs={'class': 'form-control','placeholder': 'Year-Month-Day.'}),}  
 
 
-class CreationIntenApp(ModelForm):
+class TakePresence(ModelForm):
     class Meta:
-        model = InternshipApp
+        model = Attendence
         fields = '__all__'
         widgets = {
-        'studentName': forms.TextInput(attrs={'class': "form-control",'style': 'max-width: 100%; overflow: auto;','placeholder': 'Full Name..'}),
-        'studentdep': forms.TextInput(attrs={'class': "form-control",'style': 'max-width: 100%; overflow: auto;','placeholder': 'Department..'}),
-        'studentCard': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Your Card Number..'}),
-        'studentSnum': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Social Security Number..'}),
-        'studenTel': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Your Phone Number..'}),
-        'prepDeplome': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Licsense/Master..'}),
-        'sprvisorName': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Supervisor full name..'}),}  
+        'prepDeplome': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Explain Theme of the intenrship..','rows':3, 'cols':5,'style': 'max-width: 100%; Height: 100px;overflow: auto;'}),
+        'companyAdrss': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Social Security Number..'}),
+        'strtDate': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Social Security Number..'}),
+        'endDate': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Social Security Number..'}),
+        'internshipDay': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Social Security Number..'}),
+        'workingHours': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Social Security Number..'}),
+        'observation': forms.Textarea(attrs={'class': 'form-control','placeholder': 'Explain Theme of the intenrship..','rows':3, 'cols':5,'style': 'max-width: 100%; Height: 100px;overflow: auto;'}),
+        'isPresent': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Social Security Number..'}),
+} 
 
-    
+
+class Rating(ModelForm):
+    class Meta:
+        model = Marks
+        fields = ['internMaster', 'workPlan', 'gnrlDiscipline', 'workAptitudes', 'initiative', 'innovationAbilities', 'knowledgeAcquired', 'Appreciation']
+        widgets = {
+        'internMaster': forms.Select(attrs={'class': 'form-control'}),
+        'workPlan': forms.Textarea(attrs={'class': 'form-control','placeholder': 'Explain Theme of the intenrship..','rows':3, 'cols':5,'style': 'max-width: 100%; Height: 100px;overflow: auto;'}),
+        'gnrlDiscipline': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Social Security Number..'}),
+        'workAptitudes': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Social Security Number..'}),
+        'initiative': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Social Security Number..'}),
+        'innovationAbilities': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Social Security Number..'}),
+        'knowledgeAcquired': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Social Security Number..'}),
+        'Appreciation': forms.Textarea(attrs={'class': 'form-control','placeholder': 'Explain Theme of the intenrship..','rows':3, 'cols':5,'style': 'max-width: 100%; Height: 100px;overflow: auto;'}),} 
 
 

@@ -41,7 +41,8 @@
                                 <th scope="col">Department</th>
                                 <th scope="col">Student Card Number</th>
                                 <th scope="col">Diplome</th>
-                                <th scope="col" style="width: 100px;">Action</th>
+                                <th scope="col" style="width: 100px;"></th>
+                                <th scope="col" style="width: 90px;"> Action</th>
                                 <th scope="col"> </th>
                             </tr>
                         </thead>
@@ -121,8 +122,37 @@
                             <!-- End Modal -->
                                 </td>
                                 <td>
-                                    <form action="{% url 'DeclinedByAdmin' i.id %}" method="POST">{% csrf_token %}<button type="submit" class="btn btn-outline-danger me-0" data-bs-toggle="modal" data-bs-target="#exampleModal">Decline</button></form>
+                                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#Decline">
+                                        Decline
+                                      </button>
+                                  <!-- Modal -->
+                                  <div class="modal fade" id="Decline" tabindex="-1" aria-labelledby="DeclineLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="DeclineLabel">Confirmation Message</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                        <form action="{% url 'DeclinedByAdmin' i.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <div class="form-outline mb-4">
+                                            <label class="mb-2">Tell applicant what to modify:</label>
+                                            <textarea class="form-control" name="RejectionReason" rows="5" placeholder="Write the rejection reason.." required></textarea>
+                                        </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Send Reason</button></form>
+                                    </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            <!-- End Modal -->
                                 </td>
+                                <td>
+                                    <form action="{% url 'DefinitelyRejectByAdmin' i.id %}" method="POST">{% csrf_token %}<button type="submit" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Definitely reject</button></form>
+                             </td>
                             </tr>
                             {% endfor %}{% endif %}
 {% endblock %}

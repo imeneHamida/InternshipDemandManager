@@ -39,6 +39,13 @@ urlpatterns = [
     path('DeclinedByAdmin/<str:pk>/', views.DeclinedByAdmin, name='DeclinedByAdmin'),
     path('ApprovedBySupervisor/<str:pk>/', views.ApprovedBySupervisor, name='ApprovedBySupervisor'),
     path('DeclinedBySupervisor/<str:pk>/', views.DeclinedBySupervisor, name='DeclinedBySupervisor'),
+    path('DefinitelyRejectByAdmin/<str:pk>/', views.DefinitelyRejectByAdmin, name='DefinitelyRejectByAdmin'),
+    path('DefinitelyRejectBySupervisor/<str:pk>/', views.DefinitelyRejectBySupervisor, name='DefinitelyRejectBySupervisor'),
     path('updateApplication/<str:pk>/', views.updateApp, name='updateApp'),
     path('DeleteApp/<str:pk>/', views.DeleteApp, name='DeleteApp'),
+    path('StudentRating/<str:pk>/', views.StudentRating, name='StudentRating'),
+    path('InternIspresent/<str:pk>/', views.InternIspresent, name='InternIspresent'),
+    path('InternIsNotpresent/<str:pk>/', views.InternIsNotpresent, name='InternIsNotpresent'),
+    path('viewRating/<str:pk>/', views.viewRating, name='viewRating'),
+    path('InternshipCertificate/<str:pk>/', views.render_to_pdf, name='Certificate')
     ]

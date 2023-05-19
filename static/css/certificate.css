@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Pinyon+Script|Rochester');
+
+.outer-border{
+    width:900px; height:600px; padding:20px; border: 10px solid #3ab783;
+}
+
+.inner-dotted-border{
+    width:850px; height:550px; padding:20px; border: 5px solid #3ab792;border-style: dotted;
+}
+
+.certificate-content{
+    text-align:center;
+}
+.certification{
+    font-size:50px; font-weight:bold;    color: #3ab792;
+    font-family: 'Pinyon Script';
+
+}
+
+.certify{
+    font-size:20px;
+}
+
+.name{
+    font-size:25px;    color: green;
+}
+
+.fs-30{
+    font-size:25px;
+}
+
+.fs-20{
+    font-size:20px;
+}

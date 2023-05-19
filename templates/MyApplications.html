@@ -16,7 +16,7 @@
         <div class="col-md-6">
             <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
                 <div>
-                    <a href="{% url 'internappform'%}" class="btn btn-success"><i class="bx bx-plus me-1"></i>Add</a>
+                    <a href="{% url 'internappform'%}" class="btn btn-success "><i class="bx bx-plus me-1"></i>Add</a>
                 </div>
                 <div class="dropdown">
                     <a class="btn btn-link text-muted py-1 font-size-16 shadow-none dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bx bx-dots-horizontal-rounded"></i></a>
@@ -35,7 +35,7 @@
                 <div class="table-responsive">
                     <table class="table project-list-table table-nowrap align-middle table-borderless">
                         <thead>
-                            <tr>
+                            <tr style="background-color: rgba(170, 199, 187, 0.856);">
                                 <th>
                                     <div></div>
                                 </th>
@@ -49,8 +49,30 @@
                         </thead>
                         <tbody>
                             {% for i in myapps %}
-                            <tr>                                       
-                                <td><a href="#" class="bi bi-three-dots" title="Details"></a></td>
+                            <tr style=" border-bottom: 1px solid rgb(195, 193, 193);">                                       
+                                <td><a type="button" class="bi bi-three-dots" data-bs-toggle="modal" data-bs-target="#MyAppDetails" title="Details"></a>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="MyAppDetails" tabindex="-1" aria-labelledby="MyAppDetailsLabel" aria-hidden="true">
+                                      <div class="modal-dialog modal-dialog-scrollable">
+                                      <div class="modal-content">
+                                          <div class="modal-header">
+                                          <h1 class="modal-title fs-5" id="MyAppDetailsLabel">Application Details</h1>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                          </div>
+                                          <div class="modal-body">
+                                              <div>
+                                                  <div class="row mt-2">
+                                                      <div class="col-md-6"><h6 class="mb-0">Rejection reason:</h6> {{i.RejectionReason}}</div>
+                                                  </div>
+                                                  
+                                              </div>
+                                          </div>
+                                          <div class="modal-footer">
+                                          </div>
+                                      </div>
+                                      </div>
+                                  </div></td>
+                              <!-- End Modal -->
                                 <td>{{i.companyName}}</td>
                                 <td>{{i.sprvisorName}}</td>
                                 <td>{% if i.approvedByMaster == True %}<span id="boot-icon" class="bi bi-check ms-5" style="font-size: 30px; color: rgb(98, 203, 105); -webkit-text-stroke-width: 1.5px; opacity: 0.9;"></span>
@@ -78,20 +100,67 @@
                                     {% endif %}
                                 </td>
                                 <td>
+                                    {% if i.approvedByMaster != True %}
                                     <ul class="list-inline mb-0">
                                         <li class="list-inline-item">
                                             <a href="{% url 'updateApp' i.id %}" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit" class="px-2 text-success"><i class="bx bx-pencil font-size-18"></i></a>
                                         </li>
-                                        {% if i.approvedByMaster == True or i.approvedBySupervisor == True %}
-                                        <li class="list-inline-item">
-                                            <a href="{% url 'DeleteApp' i.id %}" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete" class="px-2 text-danger disabled"><i class="bx bx-trash-alt font-size-18"></i></a>
-                                        </li>
-                                        {% else %}
                                         <li class="list-inline-item">
                                             <a href="{% url 'DeleteApp' i.id %}" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete" class="px-2 text-danger"><i class="bx bx-trash-alt font-size-18"></i></a>
                                         </li>
-                                        {% endif %}
                                     </ul>
+                                    {% else %}
+                                    
+                                 <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#viewMarks">View Marks</button>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="viewMarks" tabindex="-1" aria-labelledby="viewMarksLabel" aria-hidden="true">
+                                          <div class="modal-dialog modal-dialog-scrollable">
+                                          <div class="modal-content">
+                                              <div class="modal-header">
+                                              <h1 class="modal-title fs-5" id="viewMarksLabel"><center>INTERNSHIP RATING FORM</center></h1>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                              </div>
+                                              <div class="modal-body">
+                                                  <div>
+                                                    {% for i in marks %}
+                                                    <div class="mx-1"><b>Trainee First and Last Name:</b> {{request.user}}</div>
+                                                    <div class="row">
+                                                          <div class="col-md-6"><b class="mx-1">Born on:</b> birthdate</div>
+                                                          <div class="col-md-6"><b class="mx-1">in:</b> constantine </div>
+                                                    </div>
+                                                    <div class="mx-1"><b>Diploma prepared:</b> {{i.prepDeplome}}</div>
+                                                    <div class="mx-1"><b>duration of the internship:</b> {{i.duree}}</div>
+                                                    <div class="row">
+                                                        <div class="col-md-6"><b class="mx-1">Starting from:</b>{{i.strtDate}}</div>
+                                                        <div class="col-md-6"><b class="mx-1">until:</b>{{i.endDate}}</div>
+                                                    </div>
+                                                    <div class="mx-1"><b>Realised work plan:</b> {{i.workPlan}}</div>
+                                                    <hr class="mx-n3">
+                                                    <div class="row">
+                                                        <div class="col-md-4"><h6 class="mx-1"><b>Discipline:</b></h6>{{i.gnrlDiscipline}}/4</div>
+                                                        <div class="col-md-4"><h6 class="mx-1"><b>work Aptitudes:</b></h6>{{i.workAptitudes}}/4</div>
+                                                        <div class="col-md-4"><h6 class="mx-1"><b>initiative:</b></h6>{{i.initiative}}/4</div>
+                                                    </div>
+                                                    <hr class="mx-n3">
+                                                    <div class="row">
+                                                        <div class="col-md-4"><h6 class="mx-1"><b>Innovation abilities:</b></h6>{{i.innovationAbilities}}/4</div>
+                                                        <div class="col-md-4"><h6 class="mx-1"><b>knowledge acquired:</b></h6>{{i.knowledgeAcquired}}/4</div>
+                                                        <div class="col-md-4"><h6 class="mx-1"><b>Full Mark:</b></h6>{{i.fullMark}}/4</div>
+                                                    </div>
+                                                    <hr class="mx-n3">
+                                                    <div class="mx-1"><b>Overall appreciation:</b> {{i.Appreciation}}</div>
+                                                    {% endfor %}
+                                                  </div>
+                                              </div>
+                                              <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                              </div>
+                                          </div>
+                                          </div>
+                                      </div>
+                                  <!-- End Modal -->
+                                    
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% endfor %}

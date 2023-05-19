@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Open+Sans|Pinyon+Script|Rochester');
+        @page {
+        size: A4 landscape;
+        margin: 15mm; /* Adjust the margin value as per your requirements */
+        border: 1px solid black;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        
+        .certificate {
+            margin: 20px;
+            /*border: 1px solid black;text-align:center;*/
+            padding: 20px;
+            font-size:15px;
+        }
+        
+        .signatures {
+            margin-top: 50px;
+            margin-left: 20px;
+            margin-right: 25px;
+            padding: 20px;
+            font-size:15px; font-weight:bold;
+            
+        }
+        /*
+            .outer-border{
+                width:900px; height:600px; padding:20px; border: 10px solid #3ab783;
+            }
+
+            .inner-dotted-border{
+                width:850px; height:550px; padding:20px; border: 5px solid #3ab792;border-style: dotted;
+            }*/
+    </style>
+</head>
+<body>
+    {% for i in marks %}
+    <div class="certificate">
+        <h3 style="text-align:center;"><i>Democratic and Popular Republic of Algeria</i></h3>
+        <h1 style="text-align:center;"><b>INTERNSHIP CERTIFICATE</b></h1>
+        <p>I, the undersigned <span id="responsable-stage">{{i.internMaster}}</span>,
+        internship supervisor at <span id="entreprise">........................................</span>,
+        certify that the student <span id="etudiant">{{i.intern}}</span>,
+        born on <span id="date-naissance">........................................</span>
+        in <span id="lieu-naissance">........................................</span>,
+        Registered at the University of Constantine 2,
+        has successfully completed an internship in the field of
+        <span id="filiere">........................................</span>
+        at <span id="lieu-stage">........................................</span>,
+        <span id="periode">........................................</span>.</p>
+        
+        <p style="text-align: center;">Given at <span id="lieu">........................................</span> on <span id="date">........................................</span>.</p>
+    </div>
+    
+    <div class="signatures">
+        <span style="float: left; text-align: left;">Representative of University Constantine 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="spacing">Head of the hosting institution or administration</span></span>
+        </div>
+    {% endfor %}
+</html>
+
+
+
+
