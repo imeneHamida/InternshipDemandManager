@@ -1,0 +1,72 @@
+{% extends './AdminNavBar.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .container {
+  height: 300px;
+}
+
+.row {
+  height: 150px;
+}
+</style>
+<div class="container rounded bg-white">
+    <div class="row mt-2">
+        <div class="col-md-4 border-right" id="profilePic">
+            <div class=" d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5 p-1 bg-success" width="150px" src="{% static 'imgs/unknown-user-picture.jpg' %}"><span class="font-weight-bold mt-3">{{request.user}}</span><span class="text-black-50">{{request.user.email}}</span><span> </span></div>
+        </div>
+            <div class="col-md-7 ">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-right">Profile Settings</h4>
+                    </div>
+        <form method="POST" action="{% url 'AdminProfile' %}">
+          {% csrf_token %}
+                    <div class="row mt-3">
+                        <div class="col-md-12"><label class="labels">Full Name</label><br>{{form.fullname}}</div>
+                        <div class="col-md-12"><label class="labels">Password <span class="text-muted fw-normal ms-2" style="font-size: small;">(Resetting your password will log you out of your account for security reasons.)</span></label><br>{{form.password}}</div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6"><label class="labels">University</label><br>{{form.university}}</div>
+                        <div class="col-md-6"><label class="labels">Department</label><br>{{form.dep}}</div>
+                        {% if messages %}
+                        <ul class="messages">
+                          {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                          {% endfor %}
+                        </ul>
+                      {% endif %}                      
+                    </div>
+                    <div class="ms-5 mb-5 text-center">
+                        <button type="submit" class="btn btn-success profile-button">Save Profile</button>
+                        <!-- Button trigger modal -->
+                        <a class="ms-4 btn btn-danger profile-button" data-toggle="modal" data-target="#DeleteAlert" type="button">Delete Account</a>
+                        <!-- Modal -->
+                        <div class="modal fade" id="DeleteAlert" tabindex="-1" role="dialog" aria-labelledby="DeleteAlertTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Warning:</strong> Deleting your account will permanently remove all your data and cannot be undone. <span style="color: brown;">This action is irreversible!</span></p>
+                            </div>
+                            <div class="modal-footer">
+                                <form method="post" action="{% url 'deleteAccount' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Confirm Delete</button>
+                                </form>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+</div>
+
+
+{% endblock %}

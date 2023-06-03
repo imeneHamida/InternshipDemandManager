@@ -6,11 +6,7 @@
         <title>InternFlow</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-              
+
         <script>
           // Date Picker Initialization
             $('.datepicker').datepicker({
@@ -21,7 +17,7 @@
     </head>
       <body>
         <div>
-        <div class = "shadow-sm p-3 mb-5 bg-white rounded">
+        <div class = "shadow-sm p-3 bg-white rounded">
             <nav class="navbar navbar-expand-lg bg-white">
                 <div class="container-fluid">
                   <a class="navbar-brand" href="#">InternFlow</a>
@@ -34,10 +30,10 @@
                         <a class="nav-link active" aria-current="page" href="{% url 'SupervisorHome'%}">Home</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="{% url 'MyApplications'%}">My application</a>
+                        <a class="nav-link" href="{% url 'Applications'%}">Applications</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="{% url 'StudentProfile'%}">My Profile</a>
+                        <a class="nav-link" href="{% url 'SupervisorProfile'%}">My Profile</a>
                       </li>
                       <li class="nav-item">
                         <a href="{% url 'LogoutUser'%}" class="button btn btn-outline-dark me-0 mt-1 pt-1 px-4 rounded-pill">Logout</a>
@@ -58,3 +54,5 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
       </body>
     </html>
+
+

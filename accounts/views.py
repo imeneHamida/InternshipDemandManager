@@ -1,13 +1,15 @@
-from .forms import CreationUserForm,CreationIntenApp,Rating,TakePresence
+from .forms import *
 from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import UpdateView
 from .decorators import admin_redirect,unauthenticated_user,allowed_users
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from .email_utils import send_account_details_email
 from django.conf import settings
 from .utils import render_to_pdf
@@ -25,6 +27,13 @@ def alertView(request):
     message = "This is an alert message!"
     return render(request, 'Alertdialog.html', {'message': message})
 
+@login_required(login_url='Signin')
+def delete_account(request):
+    if request.method == 'POST':
+        request.user.delete()
+        logout(request)
+        return redirect('Home')
+    return render(request, 'Home.html')
 
 @unauthenticated_user
 def Home(request):
@@ -44,13 +53,23 @@ def Aboutus(request):
 
 @allowed_users(allowed_roles=['univStudents'])
 @login_required(login_url='Signin')
-class UpdateView(UpdateView):
-   model=Student
-   fields="__all__"
-   template_name='internAppForm.html'
-   success_url='/internappform/'
 def updateApp(request, pk):
-    Myapp = InternshipApp.objects.get(id=pk)
+    student = get_object_or_404(InternshipApp, pk=pk, applicant=request.user)
+    if request.method == 'POST':
+        form = CreationIntenApp(request.POST, instance=student)
+        if form.is_valid():
+            form.instance.applicant = request.user
+            form.instance.studenTel = request.user.student.studenTel
+            form.instance.studentCard = request.user.student.studentCard
+            form.instance.studentdep = request.user.student.department
+            form.instance.studentSnum = request.user.student.studentSnum
+            form.instance.prepDeplome = request.user.student.prepDeplome
+            form.save()
+            return redirect('MyApplications')
+    else:
+        form = CreationIntenApp(instance=student)
+
+    context = {'form': form}
     return render(request,"internAppForm.html", context)
 
 @login_required(login_url='Signin')
@@ -71,20 +90,24 @@ def ApprovedByAdmin(request, pk):
     supusername = app.sprvisorName
     suppassword = 'iamsupervisor'
     supemail = app.sprvisorEmail
-    user = User.objects.create_user(
-        username= supusername,
-        email= supemail,
-        password= suppassword,
-    )
-    user.save()
-    supervisor_group = Group.objects.get(name='Supervisor') 
-    user.groups.add(supervisor_group)
-    Supervisor.objects.create(fullname=supusername,email=supemail,password=suppassword)
-    app.internMaster = user
-    app.save()
-    send_account_details_email(supemail, supusername, suppassword)
+
+    # Check if the supusername already exists
+    if not User.objects.filter(username=supusername).exists():
+        user = User.objects.create_user(
+            username=supusername,
+            email=supemail,
+            password=suppassword,
+        )
+        user.save()
+        supervisor_group = Group.objects.get(name='Supervisor') 
+        user.groups.add(supervisor_group)
+        Supervisor.objects.create(fullname=supusername, email=supemail, password=suppassword)
+        app.internMaster = user
+        app.save()
+        send_account_details_email(supemail, supusername, suppassword)
+
     apps = InternshipApp.objects.all()
-    return render(request,"AdminHome.html",{'appslist' : apps})
+    return render(request, "AdminHome.html", {'appslist': apps})
 
 @allowed_users(allowed_roles=['admin'])
 @login_required(login_url='Signin')
@@ -116,19 +139,35 @@ def render_to_pdf(request, pk):
 
     # Checking if PDF generation was successful
     if not pdf.err:
-        # Set the appropriate response headers for PDF
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="Certification.pdf"'
-        # Write the PDF file to the response
+        # Writing the PDF file to the response
         response.write(result.getvalue())
         return response
-    # Return an error response if PDF generation failed
+    # Returning an error response if PDF generation failed
     return HttpResponse('Error generating PDF', status=500)
 
 #class Certificate(View):
     #def get(self, request, *args, **kwargs):
         #pdf = render_to_pdf('Certificate.html')
         #return HttpResponse(pdf, content_type='application/pdf')
+
+def PrintAgreement(request, pk):
+    app = InternshipApp.objects.get(id=pk)
+    template = get_template('Convention.html')
+    context = {'app': app} 
+    html = template.render(context)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
+    # Checking if PDF generation was successful
+    if not pdf.err:
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="internshipAgreement.pdf"'
+        # Writing the PDF file to the response
+        response.write(result.getvalue())
+        return response
+    # Returning an error response if PDF generation failed
+    return HttpResponse('Error generating PDF', status=500)
 
 @allowed_users(allowed_roles=['Supervisor'])
 @login_required(login_url='Signin')
@@ -162,9 +201,7 @@ def viewRating(request, pk):
     app = InternshipApp.objects.get(id=pk)
     appintern = app.applicant
     marks = Marks.objects.filter(intern=app.applicant)
-    
     supervisor_group = Group.objects.get(name='Supervisor')
-    
     if supervisor_group in request.user.groups.all():
         template = "SupervisorHome.html"
     else:
@@ -259,40 +296,226 @@ def DeclinedBySupervisor(request, pk):
 def AdminHome(request):
     apps = InternshipApp.objects.all()
     total_apps = apps.count()
-    return render(request,"AdminHome.html",{'appslist' : apps,'total_apps': total_apps })
+    return render(request,"AdminHome.html",{'appslist' : apps,'total_apps': total_apps})
+
+
+@login_required(login_url='Signin')
+@allowed_users(allowed_roles=['admin'])
+def AdminProfile(request):
+    Admin = request.user.admin
+    if request.method == 'POST':
+        form = AdminEditProfile(request.POST, instance=Admin)
+        if form.is_valid():
+            Admin.username = request.user 
+            submmitedform = form.save(commit=False)
+            password = form.cleaned_data.get('password')
+            if password:
+                # Setting the new password for the user
+                request.user.set_password(password)
+                request.user.save()
+            Admin.save()
+            return redirect('AdminProfile')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+    else:
+        form = AdminEditProfile(instance=Admin)
+    context = {'form': form}
+    return render(request, 'AdminProfile.html', context)
 
 @allowed_users(allowed_roles=['Supervisor'])
 @login_required(login_url='Signin')
 def SupervisorHome(request):
+    offers = InternOffer.objects.filter(internMaster = request.user)
+    total_offers = offers.count()
+    return render(request,"SupervisorHome.html",{'offers' : offers, 'total_offers': total_offers})
+
+@allowed_users(allowed_roles=['Supervisor'])
+@login_required(login_url='Signin')
+def CreateOffer(request):
+    if request.method =='POST':
+        starting_date = request.POST.get('StartingDate')
+        ending_date = request.POST.get('EndingDate')
+        if starting_date > ending_date:
+            error_message = 'Starting date cannot be later than the ending date.'
+            context = {'error_message': error_message}
+            return render(request, 'CreateOffer.html', context)
+        else:
+            offer = InternOffer.objects.create(internMaster = request.user)
+            offer.Sprvisorfullname = request.user.supervisor.fullname
+            offer.Sprvisoremail = request.user.supervisor.email
+            offer.SprvisorTel = request.user.supervisor.Tel
+            offer.SprvisorFax = request.user.supervisor.Fax
+            offer.companyName = request.POST.get("CompanyName")
+            offer.companyAdrss = request.POST.get("CompanyAddress")
+            offer.theme = request.POST.get("Theme")
+            offer.duree = request.POST.get("duree")
+            offer.Salary = request.POST.get("Salary")
+            offer.strtDate = request.POST.get("StartingDate")
+            offer.endDate = request.POST.get("EndingDate")
+            offer.save()
+            return redirect('SupervisorHome')
+    context = {}
+    return render(request,"CreateOffer.html", context)
+
+@allowed_users(allowed_roles=['Supervisor'])
+@login_required(login_url='Signin')
+def EditOffer(request, pk):
+    offer = get_object_or_404(InternOffer, pk=pk)
+
+    if request.method == 'POST':
+        starting_date = request.POST.get('StartingDate')
+        ending_date = request.POST.get('EndingDate')
+        
+        if starting_date > ending_date:
+            error_message = 'Starting date cannot be later than the ending date.'
+            context = {'error_message': error_message, 'offer': offer}
+            return render(request, 'EditOffer.html', context)
+        
+        offer.companyName = request.POST.get("CompanyName")
+        offer.companyAdrss = request.POST.get("CompanyAddress")
+        offer.theme = request.POST.get("Theme")
+        offer.Salary = request.POST.get("Salary")
+        offer.strtDate = request.POST.get("StartingDate")
+        offer.endDate = request.POST.get("EndingDate")
+        offer.save()
+        
+        return redirect('SupervisorHome')
+    
+    context = {'offer': offer}
+    return render(request, "CreateOffer.html", context)
+
+@allowed_users(allowed_roles=['Supervisor'])
+@login_required(login_url='Signin')
+def Applications(request):
     supervisors = InternshipApp.objects.filter(internMaster = request.user)
+    attendence = Attendence.objects.filter(intern__in=supervisors.values('applicant'))
     total = supervisors.count()
-    return render(request,"SupervisorHome.html",{'appslist' : supervisors ,'total_apps' : total})
+    return render(request,"Applications.html",{'appslist' : supervisors ,'total_apps' : total, 'attendence': attendence})
+
+@allowed_users(allowed_roles=['Supervisor'])
+@login_required(login_url='Signin')
+def SupervisorProfile(request):
+    supervisor = request.user.supervisor
+    if request.method == 'POST':
+        form = SupervisorEditProfile(request.POST, instance=supervisor)
+        if form.is_valid():
+            supervisor.username = request.user 
+            submmitedform = form.save(commit=False)
+            password = form.cleaned_data.get('password')
+            if password:
+                # Setting the new password for the user
+                request.user.set_password(password)
+                request.user.save()
+            supervisor.save()
+            return redirect('SupervisorProfile')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+    else:
+        form = SupervisorEditProfile(instance=supervisor)
+    context = {'form': form}
+    return render(request, 'SupervisorProfile.html', context)
+
+@allowed_users(allowed_roles=['univStudents'])
+@login_required(login_url='Signin')
+def InternOffers(request):
+    offers = InternOffer.objects.all()
+    total = offers.count()
+    return render(request,"InternOffers.html",{'offers' : offers ,'total_offers' : total})
 
 @allowed_users(allowed_roles=['univStudents'])
 @login_required(login_url='Signin')
 def internappform(request):
-    form = CreationIntenApp()
-    if request.method =='POST':
+    if request.method == 'POST':
         form = CreationIntenApp(request.POST)
         if form.is_valid():
+            form.instance.applicant = request.user
+            form.instance.studenTel = request.user.student.studenTel
+            form.instance.studentCard = request.user.student.studentCard
+            form.instance.studentdep = request.user.student.department
+            form.instance.studentSnum = request.user.student.studentSnum
+            form.instance.prepDeplome = request.user.student.prepDeplome
             form.save()
             return redirect('MyApplications')
+    else:
+        form = CreationIntenApp()
+
     context = {'form': form}
-    return render(request,"internAppForm.html", context)
+    return render(request, 'internAppForm.html', context)
+
+@allowed_users(allowed_roles=['univStudents'])
+@login_required(login_url='Signin')
+def ApplyForOffer(request, pk):
+    offer = get_object_or_404(InternOffer, pk=pk)
+    offers = InternOffer.objects.all()
+    total = offers.count()
+    if request.method == 'POST':
+        app = InternshipApp.objects.create(applicant = request.user)
+        app.internMaster = offer.internMaster
+        app.studenTel = request.user.student.studenTel
+        app.studentCard = request.user.student.studentCard
+        app.studentdep = request.user.student.department
+        app.studentSnum = request.user.student.studentSnum
+        app.prepDeplome = request.user.student.prepDeplome
+        app.coverLetter = offer.coverLetter
+        app.companyName = offer.companyName
+        app.companyAdrss = offer.companyAdrss
+        app.sprvisorName = offer.Sprvisorfullname
+        app.sprvisorEmail = offer.Sprvisoremail
+        app.sprvisorTel = offer.SprvisorTel
+        app.sprvisorFax = offer.SprvisorFax
+        app.duree = offer.duree
+        app.theme = offer.theme
+        app.strtDate = offer.strtDate
+        app.endDate = offer.endDate
+        app.save()
+        return redirect('InternOffers')
+
+    context = {'offers': offers, 'total_offers': total}
+    return render(request, 'InternOffers.html', context)
 
 @admin_redirect
 @login_required(login_url='Signin')
 @allowed_users(allowed_roles=['univStudents'])
-def StudentHome(request):
+def StudentHome(request,):
     context = { }
     return render(request,"StudentHome.html", context)
 
 @login_required(login_url='Signin')
 @allowed_users(allowed_roles=['univStudents'])
 def StudentProfile(request):
-    Details = request.user.Student.objects.all
-    context = { 'Details': Details }
+    #Details = user.objects.all
+    context = { }
     return render(request,"StudentProfile.html", context)
+
+@allowed_users(allowed_roles=['univStudents'])
+@login_required(login_url='Signin')
+def studentEditProfile(request):
+    student = request.user.student
+    if request.method == 'POST':
+        form = StudentEditProfile(request.POST, instance=student)
+        if form.is_valid():
+            student.username = request.user 
+            submmitedform = form.save(commit=False)
+            password = form.cleaned_data.get('password')  # Get the new password value from the form
+            if password:
+                # Set the new password for the user
+                request.user.set_password(password)
+                request.user.save()
+            student.save()
+            return redirect('StudentProfile')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+    else:
+        form = StudentEditProfile(instance=student)
+    context = {'form': form}
+    return render(request, 'StudentEditProfile.html', context)
+
 
 @login_required(login_url='Signin')
 @allowed_users(allowed_roles=['univStudents'])
@@ -300,7 +523,8 @@ def MyApplications(request):
     apps = InternshipApp.objects.filter(applicant = request.user)
     total_apps = apps.count()
     marks = Marks.objects.filter(intern= request.user)
-    return render(request,"MyApplications.html", { 'myapps': apps , 'total_apps': total_apps, 'marks': marks})
+    presence = Attendence.objects.filter(intern= request.user)
+    return render(request,"MyApplications.html", { 'myapps': apps , 'total_apps': total_apps, 'marks': marks, 'presence':presence})
 
 
 
@@ -312,20 +536,21 @@ def LogoutUser(request):
 
 @unauthenticated_user
 def Signin(request):
-        if request.method =='POST':
+        if request.method == 'POST':
             username = request.POST.get('fullname')
             email = request.POST.get('email')
             password = request.POST.get('password')
 
-            user = authenticate(request, username=username,email=email, password=password)
-
-            if user is not None:
-                login(request,user)
-                return redirect('StudentHome')
-                messages.success(request,'successfuly logged in')
+            if not (username and email and password):
+                messages.error(request, 'Please fill in all the required fields!')
             else:
-                messages.info(request,'not correct')
-                
+                user = authenticate(request, username=username, email=email, password=password)
+
+                if user is not None:
+                    login(request, user)
+                    return redirect('StudentHome')
+                else:
+                    messages.error(request, 'Invalid credentials!')
         context = { }
         return render(request, "SignIn.html", context)
 
@@ -339,7 +564,6 @@ def Signup(request):
             email = request.POST.get("email")
             password = request.POST.get("password")
             password2 = request.POST.get("password2")
-
             user = User.objects.create_user(
                 username=username,
                 password=password,

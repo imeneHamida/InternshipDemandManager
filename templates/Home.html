@@ -1,6 +1,37 @@
 {% extends './navbar.html' %}
 {% load static %}
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<style>
+  .swiper {
+  width: 600px;
+  height: 300px;
+}
+</style>
+<script>
+const swiper = new Swiper('.swiper', {
+  // Optional parameters
+  direction: 'vertical',
+  loop: true,
+
+  // If we need pagination
+  pagination: {
+    el: '.swiper-pagination',
+  },
+
+  // Navigation arrows
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+
+  // And if we need scrollbar
+  scrollbar: {
+    el: '.swiper-scrollbar',
+  },
+});
+</script>
 
 <section id="hero" class="hero d-flex align-items-center">
 
@@ -32,7 +63,7 @@
 
       <header class="section-header">
         <h2>Our Values</h2>
-        <p>Odit est perspiciatis laborum et dicta</p>
+        <p>The value that holds us true and into account</p>
       </header>
 
       <div class="row">
@@ -40,24 +71,24 @@
         <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
           <div class="box">
             <img src="assets/img/values-1.png" class="img-fluid" alt="">
-            <h3>Ad cupiditate sed est odio</h3>
-            <p>Eum ad dolor et. Autem aut fugiat debitis voluptatem consequuntur sit. Et veritatis id.</p>
+            <h3>Simplicity</h3>
+            <p>Things being made beautiful simple are the heart of everything we do.</p>
           </div>
         </div>
 
         <div class="col-lg-4 mt-4 mt-lg-0" data-aos="fade-up" data-aos-delay="400">
           <div class="box">
             <img src="assets/img/values-2.png" class="img-fluid" alt="">
-            <h3>Voluptatem voluptatum alias</h3>
-            <p>Repudiandae amet nihil natus in distinctio suscipit id. Doloremque ducimus ea sit non.</p>
+            <h3>Social Good</h3>
+            <p>We believe in making things better for everyone,even if just by a little bit!</p>
           </div>
         </div>
 
         <div class="col-lg-4 mt-4 mt-lg-0" data-aos="fade-up" data-aos-delay="600">
           <div class="box">
             <img src="assets/img/values-3.png" class="img-fluid" alt="">
-            <h3>Fugit cupiditate alias nobis.</h3>
-            <p>Quam rem vitae est autem molestias explicabo debitis sint. Vero aliquid quidem commodi.</p>
+            <h3>Trust</h3>
+            <p>We work on the basis of creating trust which can be nutured through authenticity and transoarency.</p>
           </div>
         </div>
 
@@ -84,12 +115,12 @@
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-content-1">
-                  Non consectetur a erat nam at lectus urna duis?
+                  What is the process for applying for an internship opportunity on this website?
                 </button>
               </h2>
               <div id="faq-content-1" class="accordion-collapse collapse" data-bs-parent="#faqlist1">
                 <div class="accordion-body">
-                  Feugiat pretium nibh ipsum consequat. Tempus iaculis urna id volutpat lacus laoreet non curabitur gravida. Venenatis lectus magna fringilla urna porttitor rhoncus dolor purus non.
+                  Once you find an internship listing that interests you, Look for an "Apply Now" button. or look for an "Create internship application" button on your home page Clicking on it will usually redirect you to an application form or provide instructions on how to apply. Follow the provided guidelines to submit your application
                 </div>
               </div>
             </div>
@@ -97,12 +128,12 @@
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-content-2">
-                  Feugiat scelerisque varius morbi enim nunc faucibus a pellentesque?
+                  How can I track the status of my internship applications?
                 </button>
               </h2>
               <div id="faq-content-2" class="accordion-collapse collapse" data-bs-parent="#faqlist1">
                 <div class="accordion-body">
-                  Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.
+                  Our website provides an application section where you can track the status of your internship applications on all your applications list. This allows you to view which internships you've applied for and their corresponding statuses, such as "Waiting" or "Accepted/Rejected".
                 </div>
               </div>
             </div>
@@ -110,12 +141,12 @@
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-content-3">
-                  Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi?
+                  How do I contact the internship website's support or customer service?
                 </button>
               </h2>
               <div id="faq-content-3" class="accordion-collapse collapse" data-bs-parent="#faqlist1">
                 <div class="accordion-body">
-                  Eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis orci. Faucibus pulvinar elementum integer enim. Sem nulla pharetra diam sit amet nisl suscipit. Rutrum tellus pellentesque eu tincidunt. Lectus urna duis convallis convallis tellus. Urna molestie at elementum eu facilisis sed odio morbi quis
+                  If you have any questions or need assistance with the internship website, look for a "Contact Us," on the Home page. There, you will find information on how to reach out to the website's support team, such as through email, phone, or an online contact form. Follow the provided instructions to get in touch with the support or customer service team.
                 </div>
               </div>
             </div>
@@ -131,12 +162,12 @@
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2-content-1">
-                  Ac odio tempor orci dapibus. Aliquam eleifend mi in nulla?
+                  How do I create an account on the internship website?
                 </button>
               </h2>
               <div id="faq2-content-1" class="accordion-collapse collapse" data-bs-parent="#faqlist2">
                 <div class="accordion-body">
-                  Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.
+                  To create an account, navigate to our website's homepage and look for a "Get started" or "Register" button. Click on it and provide the required information, such as your name, email address, and password. Follow the instructions to complete the registration process.
                 </div>
               </div>
             </div>
@@ -144,12 +175,12 @@
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2-content-2">
-                  Tempus quam pellentesque nec nam aliquam sem et tortor consequat?
+                  Is there a cost or fee associated with using the internship website?
                 </button>
               </h2>
               <div id="faq2-content-2" class="accordion-collapse collapse" data-bs-parent="#faqlist2">
                 <div class="accordion-body">
-                  Molestie a iaculis at erat pellentesque adipiscing commodo. Dignissim suspendisse in est ante in. Nunc vel risus commodo viverra maecenas accumsan. Sit amet nisl suscipit adipiscing bibendum est. Purus gravida quis blandit turpis cursus in
+                  No, this website is completely funded and available for free to all students nationwide
                 </div>
               </div>
             </div>
@@ -157,12 +188,12 @@
             <div class="accordion-item">
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2-content-3">
-                  Varius vel pharetra vel turpis nunc eget lorem dolor?
+                  How do I update my profile or resume on the internship website?
                 </button>
               </h2>
               <div id="faq2-content-3" class="accordion-collapse collapse" data-bs-parent="#faqlist2">
                 <div class="accordion-body">
-                  Laoreet sit amet cursus sit amet dictum sit amet justo. Mauris vitae ultricies leo integer malesuada nunc vel. Tincidunt eget nullam non nisi est sit amet. Turpis nunc eget lorem dolor sed. Ut venenatis tellus in metus vulputate eu scelerisque. Pellentesque diam volutpat commodo sed egestas egestas fringilla phasellus faucibus. Nibh tellus molestie nunc non blandit massa enim nec.
+                  Our website has a user profile section where you can edit your personal information and manage other profile-related settings. Look for a "My Profile"  option in your accountmenu or user navbar to access and make changes to your profile.
                 </div>
               </div>
             </div>
@@ -182,23 +213,33 @@
         <div class="container" data-aos="fade-up">
   
           <header class="section-header">
-            <h2>Our Clients</h2>
-            <p>Temporibus omnis officia</p>
+            <h2>Our Sponsors</h2>
+            <p>Our reliable partners</p>
           </header>
   
-          <div class="clients-slider swiper">
-            <div class="swiper-wrapper align-items-center">
-              <div class="swiper-slide"><img src="assets/img/clients/client-1.png" class="img-fluid" alt=""></div>
-              <div class="swiper-slide"><img src="assets/img/clients/client-2.png" class="img-fluid" alt=""></div>
-              <div class="swiper-slide"><img src="assets/img/clients/client-3.png" class="img-fluid" alt=""></div>
-              <div class="swiper-slide"><img src="assets/img/clients/client-4.png" class="img-fluid" alt=""></div>
-              <div class="swiper-slide"><img src="assets/img/clients/client-5.png" class="img-fluid" alt=""></div>
-              <div class="swiper-slide"><img src="assets/img/clients/client-6.png" class="img-fluid" alt=""></div>
-              <div class="swiper-slide"><img src="assets/img/clients/client-7.png" class="img-fluid" alt=""></div>
-              <div class="swiper-slide"><img src="assets/img/clients/client-8.png" class="img-fluid" alt=""></div>
+          <!-- Slider main container -->
+          <div class="swiper">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+              <!-- Slides with sponsor logos -->
+              <div class="swiper-slide"><img src="path/to/sponsor-logo1.jpg" alt="Sponsor 1"></div>
+              <div class="swiper-slide"><img src="path/to/sponsor-logo2.jpg" alt="Sponsor 2"></div>
+              <div class="swiper-slide"><img src="path/to/sponsor-logo3.jpg" alt="Sponsor 3"></div>
+              <!-- Add more slides with sponsor logos as needed -->
             </div>
+          
+            <!-- If we need pagination -->
             <div class="swiper-pagination"></div>
+          
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+          
+            <!-- If we need scrollbar -->
+            <div class="swiper-scrollbar"></div>
           </div>
+          
+          
         </div>
   
       </section><!-- End Clients Section -->

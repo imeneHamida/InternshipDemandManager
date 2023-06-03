@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Open+Sans|Pinyon+Script|Rochester');
+        @page {
+        size: A4 portrait;
+        margin: 15mm; /* Adjust the margin value as per your requirements */
+        border: 1px solid black;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size:15px;
+        }
+        
+        
+        .agreement {
+            margin: 20px;
+            /*border: 1px solid black;text-align:center;*/
+            padding: 20px;
+            font-size:15px;
+        }
+        
+        .signature {
+            margin-top: 50px;
+            margin-left: 20px;
+            margin-right: 25px;
+            padding: 20px;
+            font-size:15px; font-weight:bold;
+            
+        }
+        /*
+            .outer-border{
+                width:900px; height:600px; padding:20px; border: 10px solid #3ab783;
+            }
+
+            .inner-dotted-border{
+                width:850px; height:550px; padding:20px; border: 5px solid #3ab792;border-style: dotted;
+            }*/
+    </style>
+</head>
+<body>
+    <div class="agreement">
+        <h3 style="text-align:center;"><i>INTERNSHIP AGREEMENT</i></h3>
+        <span style="float: left; text-align: left;">CONSTANTINE 2 UNIVERSITY<br>
+        Abdelhamid Mehri<br>
+        Located in Nouvelle ville Ali Mendjeli, Constantine - Algeria<br>
+        Represented by:<br>
+        Mr. Vice Rector in charge of<br>
+        external relations, hereinafter referred to as the university<br>
+        Tel/Fax: +00 213 031 82 45 79</span>
+        <span style="float: right; text-align: right;">
+        Company (name and address):<br>
+        ....................................<br>
+        Represented by Mr.:...........<br>
+        Tel:..............<br>
+        Fax:...............</span>
+        <h3 style="text-align:center;"><i>STUDENT DATA</i></h3>
+        <p>Name and surname: <span id="responsable-stage">{{i.applicant}}</span></p><br><br>
+        <p>Faculty: <span id="responsable-stage">NTIC</span></p><br><br>
+        <p>Department: <span id="responsable-stage">{{i.studentdep}}</span></p><br><br>
+        <p>Tel: <span id="responsable-stage">{{i.studenTel}}</span></p><br><br>
+        <p>Degree pursued: <span id="responsable-stage">{{i.prepDeplome}}</span>
+        Social Security Number: <span id="entreprise">........................................</span></p>
+        <p>Internship duration: <span id="responsable-stage">{{i.duree}}</span></p><br><br>
+        <p>Internship topic: <span id="responsable-stage">{{i.theme}}</span></p><br><br>
+
+
+        <p style="text-align: center;">Date de début du stage:<span id="lieu">........................................</span>Date de fin du stage:<span id="date">........................................</span>.</p>
+    </div>
+    
+    <div class="signature">
+        <span style="float: left; text-align: left;">Visa du chef de département:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="spacing">Pour l'entreprise</span></span>
+        </div>
+</html>
+
+
+
+

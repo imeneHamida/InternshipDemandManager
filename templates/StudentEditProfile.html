@@ -1,0 +1,52 @@
+{% extends './StudentNavBar.html' %}
+{% load static %}
+{% block content %}
+<div class="container rounded bg-white mb-3">
+    <div class="row">
+        <div class="col-md-3 border-right" id="profilePic">
+            <div class=" d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5 p-1 bg-success" width="150px" src="{% static 'imgs/unknown-user-picture.jpg' %}"><span class="font-weight-bold mt-3">{{request.user}}</span><span class="text-black-50">{{request.user.email}}</span><span> </span></div>
+        </div>
+            <div class="col-md-5 border-right">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="text-right">Profile Settings</h4>
+                    </div>
+        <form method="POST" action="{% url 'EditStudentProfile' %}">
+          {% csrf_token %}
+                    <div class="row mt-3">
+                        <div class="col-md-12"><label class="labels">Full Name</label><br>{{form.FullName}}</div>
+                        <div class="col-md-12"><label class="labels">Password</label><br>{{form.password}}</div>
+                        <div class="col-md-12"><label class="labels">Mobile Number</label><br>{{form.studenTel}}</div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6"><label class="labels">University</label><br>{{form.university}}</div>
+                        <div class="col-md-6"><label class="labels">Department</label><br>{{form.department}}</div>
+                        {% if messages %}
+                        <ul class="messages">
+                          {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                          {% endfor %}
+                        </ul>
+                      {% endif %}                      
+                    </div>
+                    <div class="ms-5 mt-5 text-center">
+                        <button type="submit" class="ms-5 btn btn-success profile-button">Save Profile</button>
+                        <a href="{% url 'StudentProfile' %}" class="ms-5 btn btn-success profile-button" type="button">Cancel</a></div>
+                    </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center experience"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></div><br>
+                    <div class="col-md-12"><label class="labels">Student Card Number</label><br>{{form.studentCard}}</div>
+                    <div class="mt-3 col-md-12"><label class="labels">Student Social Number</label><br>{{form.studentSnum}}</div>
+                    <div class="mt-4 col-md-12"><label class="labels">Prepared Deplome</label><br>{{form.prepDeplome}}</div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+</div>
+
+
+{% endblock %}

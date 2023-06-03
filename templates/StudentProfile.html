@@ -11,32 +11,48 @@
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="text-right">Profile Settings</h4>
                     </div>
-                    <div class="row mt-2">
-                        <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control" placeholder="first name" value=""></div>
-                        <div class="col-md-6"><label class="labels">Surname</label><input type="text" class="form-control" value="" placeholder="surname"></div>
+                    <div class="row mt-3">
+                        <div class="col-md-12"><label class="labels">Full Name</label><br>{% if request.user.student.FullName == None %}<span class="text-muted fw-normal ms-2">Not mentioned</span>{% else %}<span class="text-muted fw-normal ms-2">{{request.user.student.FullName}}</span>{% endif %}</div>
+                        <div class="col-md-12"><label class="labels">Password</label><br><span class="text-muted fw-normal ms-2">***********</span></div>
+                        <div class="col-md-12"><label class="labels">Mobile Number</label><br>{% if request.user.student.studenTel == None %}<span class="text-muted fw-normal ms-2">Not mentioned</span>{% else %}<span class="text-muted fw-normal ms-2">{{request.user.student.studenTel}}</span>{% endif %}</div>
                     </div>
                     <div class="row mt-3">
-                        <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text" class="form-control" placeholder="enter phone number" value=""></div>
-                        <div class="col-md-12"><label class="labels">Address Line 1</label><input type="text" class="form-control" placeholder="enter address line 1" value=""></div>
-                        <div class="col-md-12"><label class="labels">Address Line 2</label><input type="text" class="form-control" placeholder="enter address line 2" value=""></div>
-                        <div class="col-md-12"><label class="labels">Postcode</label><input type="text" class="form-control" placeholder="enter address line 2" value=""></div>
-                        <div class="col-md-12"><label class="labels">State</label><input type="text" class="form-control" placeholder="enter address line 2" value=""></div>
-                        <div class="col-md-12"><label class="labels">Area</label><input type="text" class="form-control" placeholder="enter address line 2" value=""></div>
-                        <div class="col-md-12"><label class="labels">Email ID</label><input type="text" class="form-control" placeholder="enter email id" value=""></div>
-                        <div class="col-md-12"><label class="labels">Education</label><input type="text" class="form-control" placeholder="education" value=""></div>
+                        <div class="col-md-6"><label class="labels">University</label><br>{% if request.user.student.university == None %}<span class="text-muted fw-normal ms-2">Not mentioned</span>{% else %}<span class="text-muted fw-normal ms-2">{{request.user.student.university}}</span>{% endif %}</div>
+                        <div class="col-md-6"><label class="labels">Department</label><br>{% if request.user.student.department == None %}<span class="text-muted fw-normal ms-2">Not mentioned</span>{% else %}<span class="text-muted fw-normal ms-2">{{request.user.student.department}}</span>{% endif %}</div>
                     </div>
-                    <div class="row mt-3">
-                        <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" placeholder="country" value=""></div>
-                        <div class="col-md-6"><label class="labels">State/Region</label><input type="text" class="form-control" value="" placeholder="state"></div>
+                    <div class="ms-5 mt-5 text-center">
+                        <a href="{% url 'EditStudentProfile' %}" class="ms-5 btn btn-success profile-button" type="button">Edit Profile</a>
+                        <!-- Button trigger modal -->
+                        <a class="ms-5 btn btn-danger profile-button" data-toggle="modal" data-target="#DeleteAlert" type="button">Delete Account</a>
+                        <!-- Modal -->
+                        <div class="modal fade" id="DeleteAlert" tabindex="-1" role="dialog" aria-labelledby="DeleteAlertTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Warning:</strong> Deleting your account will permanently remove all your data and cannot be undone. <span style="color: brown;">This action is irreversible!</span></p>
+                            </div>
+                            <div class="modal-footer">
+                                <form method="post" action="{% url 'deleteAccount' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Confirm Delete</button>
+                                </form>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                        </div>
                     </div>
-                    <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button">Save Profile</button></div>
-                </div>
+                    </div>
+                    </div>
             </div>
             <div class="col-md-4">
                 <div class="p-3 py-5">
-                    <div class="d-flex justify-content-between align-items-center experience"><span>Edit Experience</span><span class="border px-3 p-1 add-experience"><i class="fa fa-plus"></i>&nbsp;Experience</span></div><br>
-                    <div class="col-md-12"><label class="labels">Experience in Designing</label><input type="text" class="form-control" placeholder="experience" value=""></div> <br>
-                    <div class="col-md-12"><label class="labels">Additional Details</label><input type="text" class="form-control" placeholder="additional details" value=""></div>
+                    <div class="d-flex justify-content-between align-items-center experience"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></div><br>
+                    <div class="col-md-12"><label class="labels">Student Card Number</label><br>{% if request.user.student.studentCard == None %}<span class="text-muted fw-normal ms-2">Not mentioned</span>{% else %}<span class="text-muted fw-normal ms-2">{{request.user.student.studentCard}}</span>{% endif %}</div>
+                    <div class="mt-3 col-md-12"><label class="labels">Student Social Number</label><br>{% if request.user.student.studentSnum == None %}<span class="text-muted fw-normal ms-2">Not mentioned</span>{% else %}<span class="text-muted fw-normal ms-2">{{request.user.student.studentSnum}}</span>{% endif %}</div>
+                    <div class="mt-4 col-md-12"><label class="labels">Prepared Deplome</label><br>{% if request.user.student.prepDeplome == None %}<span class="text-muted fw-normal ms-2">Not mentioned</span>{% else %}<span class="text-muted fw-normal ms-2">{{request.user.student.prepDeplome}}</span>{% endif %}</div>
                 </div>
             </div>
    

@@ -4,28 +4,17 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">  
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css" integrity="sha512-pVCM5+SN2+qwj36KonHToF2p1oIvoU3bsqxphdOIWMYmgr4ZqD3t5DjKvvetKhXGc/ZG5REYTT6ltKfExEei/Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css" integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
-
-<div class="container">
+<style>
+    .labels{
+        font-weight: bold;
+        color: rgb(13, 16, 42);
+    }
+    </style>
+<div class="container mt-5">
     <div class="row align-items-center">
         <div class="col-md-6">
             <div class="mb-3">
                 <h5 class="card-title">Applications List <span class="text-muted fw-normal ms-2">({{total_apps}})</span></h5>
-            </div>
-        </div>
-        
-        <div class="col-md-6">
-            <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
-                <div>
-                    <a href="#" data-bs-toggle="modal" data-bs-target=".add-new" class="btn btn-success"><i class="bx bx-plus me-1"></i>Add</a>
-                </div>
-                <div class="dropdown">
-                    <a class="btn btn-link text-muted py-1 font-size-16 shadow-none dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bx bx-dots-horizontal-rounded"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                </div>
             </div>
         </div>
     </div>
@@ -39,22 +28,26 @@
                                 <th scope="col"> </th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Department</th>
-                                <th scope="col">Student Card Number</th>
+                                <th scope="col" style="width: 300px;">Student Card Number</th>
                                 <th scope="col">Diplome</th>
-                                <th scope="col" style="width: 100px;"></th>
-                                <th scope="col" style="width: 90px;"> Action</th>
+                                <th scope="col" style="width: 115px;"></th>
+                                <th scope="col" style="width: 115px;">Action</th>
                                 <th scope="col"> </th>
                             </tr>
                         </thead>
                         <tbody>
                             {% if total_apps == 0 %}
-                            <td><span style="color: hsla(157, 74%, 43%, 0.993);"><b>There is no applications to appear</b></span></td>
-                            {% else %}
-                            {% for i in appslist %}
                             <tr>
-                                <td><a type="button" class="bi bi-three-dots" data-bs-toggle="modal" data-bs-target="#exampleModal"></a>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><span style="color: hsla(157, 74%, 43%, 0.993);"><b>There is no applications to appear</b></span></td></tr>
+                            {% else %}
+                        {% for i in appslist %}
+                            <tr>
+                                <td><a type="button" class="bi bi-three-dots" data-bs-toggle="modal" data-bs-target="#exampleModal{{ i.id }}"></a>
                               <!-- Modal -->
-                              <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal fade" id="exampleModal{{ i.id }}" tabindex="-1" aria-labelledby="exampleModalLabel{{ i.id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-scrollable">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -63,11 +56,8 @@
                                     </div>
                                     <div class="modal-body">
                                         <div>
-                                            <div class="row mt-2">
-                                                <div class="col-md-6"><h6 class="mb-0">Name :</h6> {{i.applicant}}</div>
-                                                <div class="col-md-6"><label class="labels">Surname :</label> Last name</div>
-                                            </div>
                                             <div class="row mt-3">
+                                                <div class="col-md-12"><label class="labels">Student Full Name :</label> {{i.studentName}}</div>
                                                 <hr class="mx-n3">
                                                 <div class="col-md-12"><label class="labels">Supervisor Name :</label>  {{i.sprvisorName}}</div>
                                                 <hr class="mx-n3">
@@ -76,13 +66,18 @@
                                                 <div class="col-md-12"><label class="labels">Phone number :</label>  {{i.sprvisorTel}}</div>
                                                 <hr class="mx-n3">
                                                 <div class="col-md-12"><label class="labels">Fax :</label>  {{i.sprvisorFax}}</div>
-                                                <div class="col-md-12"><label class="labels">Company name :</label>  {{i.companyName}}</div></div>
-                                            <div class="row mt-3">
+                                                <div class="row mt-3">
+                                                <div class="col-md-6"><label class="labels">Company name :</label>  {{i.companyName}}</div>
+                                                <div class="col-md-6"><label class="labels">Company address :</label>  {{i.companyAdrss}}</div></div>
+                                                <hr class="mx-n3">
+                                                <div class="col-md-12"><label class="labels">Internship theme :</label>  {{i.theme}}</div>
+                                                <div class="row mt-3">
                                                 <div class="col-md-6"><label class="labels">Internship starting date:</label><br>{{i.strtDate}}</div>
                                                 <div class="col-md-6"><label class="labels">Ending date:</label><br>{{i.endDate}}</div>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                                     <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                     <form action="{% url 'ApprovedByAdmin' i.id %}" method="POST">{% csrf_token %}<button type="submit" class="btn btn-success">Confirm</button></form>
@@ -94,15 +89,25 @@
                                     <!--<a type="button" class="bi bi-three-dots" data-mdb-toggle="modal" data-mdb-target="#exampleModal" title="Details"></a>-->
                                 </td>
                                 <td><a href="#" class="text-body">{{i.applicant}}</a></td>
-                                <td>{{i.studentdep}}</td>
+                                <td>{{i.sprvisorName}}</td>
                                 <td>{{i.studentCard}}</td>
                                 <td>{{i.prepDeplome}}</td>
                                 <td>
-                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#myModal">
+                                    {% if i.MasterDefinitelyReject == True %}
+                                    <td>
+                                    <span style="font-size: 15px; color: rgb(207, 60, 60);">Rejected</span>
+                                    <span id="boot-icon" class="bi bi-x" style="font-size: 20px; color: rgb(207, 60, 60); -webkit-text-stroke-width: 1.5px; opacity: 0.9; display: inline-block;"></span>
+                                    </td>
+                                    {% elif i.approvedByMaster == True %}                                    <td>
+                                    <span style="font-size: 15px; color: rgb(98, 203, 105);">Approved</span>
+                                    <span id="boot-icon" class="bi bi-check" style="font-size: 20px; color: rgb(98, 203, 105); -webkit-text-stroke-width: 1.5px; opacity: 0.9; display: inline-block;"></span>
+                                    </td>
+                                    {% else %}
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#myModal{{ i.id }}">
                                         Approve
                                       </button>
                                   <!-- Modal -->
-                                  <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+                                  <div class="modal fade" id="myModal{{ i.id }}" tabindex="-1" aria-labelledby="myModalLabel{{ i.id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -110,7 +115,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                        By approving this demand, are you certain that you want to proceed with creating a supervisor account for <b>"{{i.sprvisorName}}"</b> ?
+                                        By approving this demand, are you certain that you want to proceed with creating a supervisor account for <b>"{{i.sprvisorName}}"</b> in case of non existence?
                                         </div>
                                         <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -122,11 +127,11 @@
                             <!-- End Modal -->
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#Decline">
+                                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#Decline{{ i.id }}">
                                         Decline
                                       </button>
                                   <!-- Modal -->
-                                  <div class="modal fade" id="Decline" tabindex="-1" aria-labelledby="DeclineLabel" aria-hidden="true">
+                                  <div class="modal fade" id="Decline{{ i.id }}" tabindex="-1" aria-labelledby="DeclineLabel{{ i.id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -153,6 +158,8 @@
                                 <td>
                                     <form action="{% url 'DefinitelyRejectByAdmin' i.id %}" method="POST">{% csrf_token %}<button type="submit" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Definitely reject</button></form>
                              </td>
+                             
+                             {% endif %}
                             </tr>
                             {% endfor %}{% endif %}
 {% endblock %}

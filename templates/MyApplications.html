@@ -16,7 +16,28 @@
         <div class="col-md-6">
             <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
                 <div>
+                    {% if request.user.student.studenTel != None %}
                     <a href="{% url 'internappform'%}" class="btn btn-success "><i class="bx bx-plus me-1"></i>Add</a>
+                    {% else %}
+                    <!-- Button trigger modal -->
+                    <a class="btn btn-success" data-toggle="modal" data-target="#exampleModalCenter"><i class="bx bx-plus me-1"></i>Add</a>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body" style="text-align: center;">
+                            <b>Please ensure your profile information is complete!</b> to proceed with this action.
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="dropdown">
                     <a class="btn btn-link text-muted py-1 font-size-16 shadow-none dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bx bx-dots-horizontal-rounded"></i></a>
@@ -64,12 +85,15 @@
                                                   <div class="row mt-2">
                                                       <div class="col-md-6"><h6 class="mb-0">Rejection reason:</h6> {{i.RejectionReason}}</div>
                                                   </div>
-                                                  
+                                            
+                                                  <div><center>Nothing to apear!</center></div>
                                               </div>
                                           </div>
                                           <div class="modal-footer">
+                                            <form action="{% url 'PrintAgreement' i.id %}" method="POST">{% csrf_token %}<button type="submit" class="btn btn-success">Print Demand</button></form>
                                           </div>
                                       </div>
+                                     
                                       </div>
                                   </div></td>
                               <!-- End Modal -->
@@ -109,56 +133,96 @@
                                             <a href="{% url 'DeleteApp' i.id %}" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete" class="px-2 text-danger"><i class="bx bx-trash-alt font-size-18"></i></a>
                                         </li>
                                     </ul>
-                                    {% else %}
                                     
-                                 <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#viewMarks">View Marks</button>
+                                    {% elif i.approvedBySupervisor == True %}
+                                    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#viewMarks">View Marks</button>
                                         <!-- Modal -->
                                         <div class="modal fade" id="viewMarks" tabindex="-1" aria-labelledby="viewMarksLabel" aria-hidden="true">
-                                          <div class="modal-dialog modal-dialog-scrollable">
-                                          <div class="modal-content">
-                                              <div class="modal-header">
-                                              <h1 class="modal-title fs-5" id="viewMarksLabel"><center>INTERNSHIP RATING FORM</center></h1>
-                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                              </div>
-                                              <div class="modal-body">
-                                                  <div>
-                                                    {% for i in marks %}
-                                                    <div class="mx-1"><b>Trainee First and Last Name:</b> {{request.user}}</div>
-                                                    <div class="row">
-                                                          <div class="col-md-6"><b class="mx-1">Born on:</b> birthdate</div>
-                                                          <div class="col-md-6"><b class="mx-1">in:</b> constantine </div>
+                                            <div class="modal-dialog modal-dialog-scrollable">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="viewMarksLabel"><center>INTERNSHIP RATING FORM</center></h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
-                                                    <div class="mx-1"><b>Diploma prepared:</b> {{i.prepDeplome}}</div>
-                                                    <div class="mx-1"><b>duration of the internship:</b> {{i.duree}}</div>
-                                                    <div class="row">
-                                                        <div class="col-md-6"><b class="mx-1">Starting from:</b>{{i.strtDate}}</div>
-                                                        <div class="col-md-6"><b class="mx-1">until:</b>{{i.endDate}}</div>
+                                                    <div class="modal-body">
+                                                        <div>
+                                                            {% for i in marks %}
+                                                            <div class="mx-1"><b>Trainee First and Last Name:</b> {{request.user}}</div>
+                                                            <div class="row">
+                                                                <div class="col-md-6"><b class="mx-1">Born on:</b> birthdate</div>
+                                                                <div class="col-md-6"><b class="mx-1">in:</b> constantine </div>
+                                                            </div>
+                                                            <div class="mx-1"><b>Diploma prepared:</b> {{i.prepDeplome}}</div>
+                                                            <div class="mx-1"><b>duration of the internship:</b> {{i.duree}}</div>
+                                                            <div class="row">
+                                                                <div class="col-md-6"><b class="mx-1">Starting from:</b>{{i.strtDate}}</div>
+                                                                <div class="col-md-6"><b class="mx-1">until:</b>{{i.endDate}}</div>
+                                                            </div>
+                                                            <div class="mx-1"><b>Realised work plan:</b> {{i.workPlan}}</div>
+                                                            <hr class="mx-n3">
+                                                            <div class="row">
+                                                                <div class="col-md-4"><h6 class="mx-1"><b>Discipline:</b></h6>{{i.gnrlDiscipline}}/4</div>
+                                                                <div class="col-md-4"><h6 class="mx-1"><b>work Aptitudes:</b></h6>{{i.workAptitudes}}/4</div>
+                                                                <div class="col-md-4"><h6 class="mx-1"><b>initiative:</b></h6>{{i.initiative}}/4</div>
+                                                            </div>
+                                                            <hr class="mx-n3">
+                                                            <div class="row">
+                                                                <div class="col-md-4"><h6 class="mx-1"><b>Innovation abilities:</b></h6>{{i.innovationAbilities}}/4</div>
+                                                                <div class="col-md-4"><h6 class="mx-1"><b>knowledge acquired:</b></h6>{{i.knowledgeAcquired}}/4</div>
+                                                                <div class="col-md-4"><h6 class="mx-1"><b>Full Mark:</b></h6>{{i.fullMark}}/4</div>
+                                                            </div>
+                                                            <hr class="mx-n3">
+                                                            <div class="mx-1"><b>Overall appreciation:</b> {{i.Appreciation}}</div>
+                                                            {% endfor %}
+                                                        </div>
                                                     </div>
-                                                    <div class="mx-1"><b>Realised work plan:</b> {{i.workPlan}}</div>
-                                                    <hr class="mx-n3">
-                                                    <div class="row">
-                                                        <div class="col-md-4"><h6 class="mx-1"><b>Discipline:</b></h6>{{i.gnrlDiscipline}}/4</div>
-                                                        <div class="col-md-4"><h6 class="mx-1"><b>work Aptitudes:</b></h6>{{i.workAptitudes}}/4</div>
-                                                        <div class="col-md-4"><h6 class="mx-1"><b>initiative:</b></h6>{{i.initiative}}/4</div>
-                                                    </div>
-                                                    <hr class="mx-n3">
-                                                    <div class="row">
-                                                        <div class="col-md-4"><h6 class="mx-1"><b>Innovation abilities:</b></h6>{{i.innovationAbilities}}/4</div>
-                                                        <div class="col-md-4"><h6 class="mx-1"><b>knowledge acquired:</b></h6>{{i.knowledgeAcquired}}/4</div>
-                                                        <div class="col-md-4"><h6 class="mx-1"><b>Full Mark:</b></h6>{{i.fullMark}}/4</div>
-                                                    </div>
-                                                    <hr class="mx-n3">
-                                                    <div class="mx-1"><b>Overall appreciation:</b> {{i.Appreciation}}</div>
-                                                    {% endfor %}
-                                                  </div>
-                                              </div>
-                                              <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                              </div>
-                                          </div>
-                                          </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        </div>
+                                                </div>
+                                            </div>
                                       </div>
                                   <!-- End Modal -->
+                                  <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#viewpresence">View Presence</button>
+                                  <!-- Modal -->
+                                    <div class="modal fade" id="viewpresence" tabindex="-1" aria-labelledby="viewpresenceLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-scrollable">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="viewpresenceLabel"><center>My Presence</center></h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <table>
+                                                        <thead>
+                                                        <tr>
+                                                        <th scope="col" style="width: 150px;">The Day</th>
+                                                        <th scope="col" style="width: 100px;">Working Hours</th>
+                                                        <th scope="col" style="width: 100px;">Presence</th>
+                                                        <th scope="col" style="width: 200px; text-align:center; background-color: rgba(165, 194, 184, 0.835);">Observation</th>
+                                                        </tr></thead>
+                                                        <tbody>
+                                                            {% for i in presence %}
+                                                        <tr>
+                                                        <td style="white-space: nowrap;">{{i.internshipDay}}</td>
+                                                        <td style="white-space: nowrap;"><span class="ms-3">{{i.workingHours}}</span></td>
+                                                        <td style="white-space: nowrap;"> 
+                                                            {% if i.isPresent == True %}<span id="boot-icon" class="bi bi-check ms-3" style="font-size: 30px; color: rgb(98, 203, 105); -webkit-text-stroke-width: 1.5px; opacity: 0.9;"></span>
+                                                            {% elif i.isPresent == False %}<span id="boot-icon" class="bi bi-x ms-3" style="font-size: 30px; color: rgb(207, 60, 60); -webkit-text-stroke-width: 1.5px; opacity: 0.9;"></span>
+                                                            {% endif %}
+                                                            </td>
+                                                        <td style="background-color: rgba(165, 194, 184, 0.835);white-space: normal; word-wrap: break-word;">{{i.observation}}</td>
+                                                    {% endfor %}
+                                                </tr></tbody>
+                                                </table>
+                                                </div>
+                                                <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            <!-- End Modal -->
                                     
                                     {% endif %}
                                 </td>

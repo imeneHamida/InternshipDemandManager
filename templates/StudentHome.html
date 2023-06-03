@@ -1,9 +1,6 @@
 {% extends './StudentNavBar.html' %}
 {% load static %}
 {% block content %}
-{% for message in messages %}
-<p id="messages">{{message}}</p>
-{% endfor %}
 <style>
   body {
       background-image: url('{% static "imgs/internship.jpeg" %}');
@@ -19,6 +16,7 @@
       align-items: center;
       justify-content: center;
   }
+
 </style>
 <section id="hero" class="hero">
   <div class="container text-center">
@@ -30,7 +28,28 @@
       </div>
       <div class="row mt-3">
           <div class="col-md-12">
-              <a href="{% url 'internappform' %}" class="btn btn-outline-success rounded-pill px-4 pt-2 pb-2"><b>Create internship application</b></a>
+                    {% if request.user.student.studenTel != None %}
+                    <a href="{% url 'internappform' %}" class="btn btn-outline-success rounded-pill px-4 pt-2 pb-2"><b>Create internship application</b></a>
+                    {% else %}
+                    <!-- Button trigger modal -->
+                    <a class="btn btn-outline-success rounded-pill px-4 pt-2 pb-2" data-toggle="modal" data-target="#exampleModalCenter"><b>Create internship application</b></a>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                            <b>Please ensure your profile information is complete!</b> to proceed with this action.
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    {% endif %}
           </div>
       </div>
   </div>

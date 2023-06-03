@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 User = settings.AUTH_USER_MODEL
 # Create your models here.
@@ -12,31 +13,35 @@ class User(AbstractUser):
         return str(self.username)
 
 class Student(models.Model):
-    username = models.OneToOneField(User,null=True, on_delete=models.CASCADE)
-    firstName = models.CharField(max_length=100,null=True)
-    lastName = models.CharField(max_length=100,null=True)
+    username = models.OneToOneField(User,null=True,blank=True, on_delete=models.CASCADE)
+    FullName = models.CharField(max_length=100,null=True)
     university = models.CharField(max_length=100,null=True)
     department = models.CharField(max_length=100,null=True)
     studentCard = models.IntegerField(null=True)
     studentSnum = models.IntegerField(null=True)
-    studenTel = models.CharField(max_length=100,null=True)
+    studenTel = models.IntegerField(max_length=100,null=True)
     prepDeplome = models.CharField(max_length=100,null=True)
+    birthDate= models.DateField(null=True,blank=True)
+    birthPlace= models.CharField(max_length=100,null=True,blank=True)
 
     def __str__(self):
         return str(self.username)
 
 class Admin(models.Model):
+    username = models.OneToOneField(User,null=True, blank=True,on_delete=models.CASCADE)
     fullname = models.CharField(max_length=100,null=True)
-    email= models.EmailField(null=True)
-    password = models.CharField(max_length=100,null=True)
     dep = models.CharField(max_length=100,null=True)
+    university = models.CharField(max_length=100,null=True)
 
     def __str__(self):
         return str(self.fullname)
 
 class Supervisor(models.Model):
+    username = models.OneToOneField(User,null=True,blank=True, on_delete=models.CASCADE)
     fullname = models.CharField(max_length=100,null=True)
-    email= models.EmailField(null=True)
+    email= models.EmailField(null=True,blank=True)
+    Tel = models.IntegerField(null=True)
+    Fax = models.IntegerField(null=True)
     password = models.CharField(max_length=100,null=True)
 
     def __str__(self):
@@ -57,11 +62,13 @@ class Attendence(models.Model):
     def __str__(self):
         return str(self.internMaster)
 
+
+
 class Marks(models.Model):
     internMaster = models.ForeignKey(User,related_name="mster",null=True,blank=True,on_delete= models.SET_NULL)
     intern = models.ForeignKey(User,related_name="intrn",null=True,blank=True,on_delete= models.SET_NULL)
-    #studentBirthDate
-    #studentBirthPlace
+    StudentbirthDate= models.DateField(null=True,blank=True)
+    StudentbirthPlace= models.CharField(max_length=100,null=True,blank=True)
     prepDeplome = models.CharField(max_length=100,null=True,blank=True)
     duree = models.CharField(max_length=100,null=True,blank=True)
     strtDate=models.DateField(null=True,blank=True)
@@ -75,12 +82,29 @@ class Marks(models.Model):
     innovationAbilities = models.IntegerField(null=True)
     knowledgeAcquired = models.IntegerField(null=True)
     fullMark = models.IntegerField(null=True,blank=True)
-    #Date: Currentdate
+    createdDate = models.DateField(default=timezone.now)
     Appreciation = models.CharField(max_length=100,null=True)
 
     def __str__(self):
         return str(self.internMaster)
 
+class InternOffer(models.Model):
+    internMaster = models.ForeignKey(User,related_name="offerspr",null=True,blank=True,on_delete= models.SET_NULL)
+    Sprvisorfullname = models.CharField(max_length=100,null=True)
+    Sprvisoremail= models.EmailField(null=True)
+    SprvisorTel = models.IntegerField(null=True)
+    SprvisorFax = models.IntegerField(null=True)
+    theme = models.CharField(max_length=100,null=True,blank=True)
+    duree = models.CharField(max_length=100,null=True,blank=True)
+    coverLetter = models.CharField(max_length=100,null=True,blank=True)
+    companyName = models.CharField(max_length=100,null=True,blank=True)
+    companyAdrss = models.CharField(max_length=100,null=True,blank=True)
+    strtDate=models.DateField(null=True,blank=True)
+    endDate=models.DateField(null=True,blank=True)   
+    Salary = models.IntegerField(null=True,blank=True)
+
+    def __str__(self):
+        return str(self.internMaster)
 
 class InternshipApp(models.Model):
     applicant = models.ForeignKey(User,related_name="std",null=True,blank=True,on_delete= models.SET_NULL)
@@ -91,6 +115,7 @@ class InternshipApp(models.Model):
     SuprvDefinitelyReject= models.BooleanField(null=True,blank=True) 
     RejectionReason=models.CharField(max_length=100,null=True,blank=True)
     rated = models.BooleanField(null=True,blank=True)
+
     sprvisorName = models.CharField(max_length=100,null=True,blank=True)
     sprvisorTel = models.IntegerField(null=True)
     sprvisorFax = models.IntegerField(null=True)
@@ -98,14 +123,15 @@ class InternshipApp(models.Model):
     companyName = models.CharField(max_length=100,null=True)
     companyAdrss = models.CharField(max_length=100,null=True)
 
+    coverLetter = models.CharField(max_length=100,null=True,blank=True)
     studentName = models.CharField(max_length=100,null=True,blank=True)
-    studentdep = models.CharField(max_length=100,null=True)
-    #studentBirthDate
-    #studentBirthPlace  
-    studentCard = models.IntegerField(null=True)
-    studentSnum = models.IntegerField(null=True)
-    studenTel = models.CharField(max_length=100,null=True)
-    prepDeplome = models.CharField(max_length=100,null=True)
+    studentdep = models.CharField(max_length=100,null=True,blank=True)
+    StudentbirthDate= models.DateField(null=True,blank=True)
+    StudentbirthPlace= models.CharField(max_length=100,null=True,blank=True)
+    studentCard = models.IntegerField(null=True,blank=True)
+    studentSnum = models.IntegerField(null=True,blank=True)
+    studenTel = models.CharField(max_length=100,null=True,blank=True)
+    prepDeplome = models.CharField(max_length=100,null=True,blank=True)
 
     theme = models.CharField(max_length=100,null=True)
     duree = models.CharField(max_length=100,null=True)
