@@ -9,6 +9,11 @@
         border: 1px solid black;
         }
 
+        #text{
+            color: rgb(1, 1, 17);
+            font-weight: bold;
+        }
+
         body {
             font-family: Arial, sans-serif;
             font-size:15px;
@@ -50,29 +55,24 @@
         Mr. Vice Rector in charge of<br>
         external relations, hereinafter referred to as the university<br>
         Tel/Fax: +00 213 031 82 45 79</span>
-        <span style="float: right; text-align: right;">
-        Company (name and address):<br>
-        ....................................<br>
-        Represented by Mr.:...........<br>
-        Tel:..............<br>
-        Fax:...............</span>
-        <h3 style="text-align:center;"><i>STUDENT DATA</i></h3>
-        <p>Name and surname: <span id="responsable-stage">{{i.applicant}}</span></p><br><br>
-        <p>Faculty: <span id="responsable-stage">NTIC</span></p><br><br>
-        <p>Department: <span id="responsable-stage">{{i.studentdep}}</span></p><br><br>
-        <p>Tel: <span id="responsable-stage">{{i.studenTel}}</span></p><br><br>
-        <p>Degree pursued: <span id="responsable-stage">{{i.prepDeplome}}</span>
-        Social Security Number: <span id="entreprise">........................................</span></p>
-        <p>Internship duration: <span id="responsable-stage">{{i.duree}}</span></p><br><br>
-        <p>Internship topic: <span id="responsable-stage">{{i.theme}}</span></p><br><br>
-
-
-        <p style="text-align: center;">Date de début du stage:<span id="lieu">........................................</span>Date de fin du stage:<span id="date">........................................</span>.</p>
+        <p style="float: right; text-align: right;">
+        Company (name and address):<br><span id="text">
+        {{app.companyName}}&nbsp;at&nbsp;{{app.companyAdrss}}</span><br>
+        Represented by Mr :<span id="text">{{app.sprvisorName}}</span><br>
+        Tel:<span id="text">{{app.sprvisorTel}}</span><br>
+        Fax:<span id="text">{{app.sprvisorFax}}</span></p>
+        <p style="float: left; text-align: left;">
+        Name and surname: <span id="text">{{app.applicant}}</span><br>
+        Faculty: <span id="text">NTIC</span><br>
+        Department: <span id="text">{{app.studentdep}}</span><br>
+        Tel: <span id="text">{{app.studenTel}}</span><br>
+        Degree pursued: <span id="text">{{app.prepDeplome}}</span><br>
+        Student Card Number: <span id="text">{{app.studentCard}}</span>&nbsp;&nbsp;&nbsp;&nbsp;Social Security Number: <span id="entreprise">{{app.studentSnum}}</span><br>
+        Internship duration: <span id="text">{{app.duree}}</span><br>
+        Internship topic: <span id="text">{{app.theme}}</span><br>
+        <span style="text-align: center;">internship starting date:<span id="text">{{app.strtDate}}</span>internship ending date:<span id="text">{{app.endDate}}</span>.</p>
+        <span style="float: left; text-align: left;">Representative of University Constantine 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp&nbsp;&nbsp;&nbsp;&nbsp<span class="spacing">Head of the hosting institution</span></span>
     </div>
-    
-    <div class="signature">
-        <span style="float: left; text-align: left;">Visa du chef de département:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="spacing">Pour l'entreprise</span></span>
-        </div>
 </html>
 
 

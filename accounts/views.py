@@ -14,6 +14,8 @@ from .email_utils import send_account_details_email
 from django.conf import settings
 from .utils import render_to_pdf
 from django.contrib.auth import authenticate,login,logout
+from django.utils.crypto import get_random_string
+from django.core.mail import send_mail
 from .models import *
 from django.views import View
 from io import BytesIO
@@ -101,12 +103,12 @@ def ApprovedByAdmin(request, pk):
         user.save()
         supervisor_group = Group.objects.get(name='Supervisor') 
         user.groups.add(supervisor_group)
-        Supervisor.objects.create(fullname=supusername, email=supemail, password=suppassword)
+        Supervisor.objects.create(username=user, email=supemail, password=suppassword)
         app.internMaster = user
         app.save()
         send_account_details_email(supemail, supusername, suppassword)
 
-    apps = InternshipApp.objects.all()
+    apps = InternshipApp.objects.filter(studentdep=request.user.admin.dep)
     return render(request, "AdminHome.html", {'appslist': apps})
 
 @allowed_users(allowed_roles=['admin'])
@@ -116,7 +118,7 @@ def DeclinedByAdmin(request, pk):
     app.approvedByMaster = False
     app.RejectionReason = request.POST.get("RejectionReason")
     app.save()
-    apps = InternshipApp.objects.all()
+    apps = InternshipApp.objects.filter(studentdep=request.user.admin.dep)
     return render(request,"AdminHome.html",{'appslist' : apps})
 
 @allowed_users(allowed_roles=['Supervisor'])
@@ -127,6 +129,22 @@ def ApprovedBySupervisor(request, pk):
     app.save()
     apps = InternshipApp.objects.all()
     return render(request,"SupervisorHome.html",{'appslist' : apps})
+
+@allowed_users(allowed_roles=['Supervisor','admin'])
+@login_required(login_url='Signin')
+def ViewPresence(request, pk):
+    supervisors = InternshipApp.objects.filter(internMaster = request.user)
+    app = InternshipApp.objects.get(id=pk)
+    attendence = Attendence.objects.filter(intern=app.applicant)
+    return render(request,"viewnpresence.html",{'app' : app,'applist' : supervisors, 'attendence': attendence})
+
+@allowed_users(allowed_roles=['admin'])
+@login_required(login_url='Signin')
+def ViewMarks(request, pk):
+    supervisors = InternshipApp.objects.filter(internMaster = request.user)
+    app = InternshipApp.objects.get(id=pk)
+    marks = Marks.objects.filter(intern=app.applicant)
+    return render(request,"viewMarks.html",{'app' : app,'applist' : supervisors, 'marks': marks})
 
 def render_to_pdf(request, pk):
     app = InternshipApp.objects.get(id=pk)
@@ -187,6 +205,13 @@ def StudentRating(request, pk):
             marks_instance.endDate = app.endDate
             marks_instance.companyName = app.companyName
             marks_instance.companyAdrss = app.companyAdrss
+            marks_instance.fullMark = (
+                form.cleaned_data['gnrlDiscipline']
+                + form.cleaned_data['workAptitudes']
+                + form.cleaned_data['initiative']
+                + form.cleaned_data['innovationAbilities']
+                + form.cleaned_data['knowledgeAcquired']
+            )
             app.rated = True
             app.save()
             marks_instance.save()
@@ -231,9 +256,9 @@ def InternIspresent(request, pk):
         attendance.isPresent = True
         attendance.internshipDay = request.POST.get("internshipDay")
         attendance.workingHours = request.POST.get("workingHours")
-        attendance.observation = request.POST.get("internshipDay")
+        attendance.observation = request.POST.get("observation")
         attendance.save()
-        return redirect('SupervisorHome')
+        return redirect('Applications')
     apps = InternshipApp.objects.all()
     return render(request,"SupervisorHome.html",{'appslist' : apps})
 
@@ -269,6 +294,7 @@ def InternIsNotpresent(request, pk):
 def DefinitelyRejectBySupervisor(request, pk):
     app = InternshipApp.objects.get(id=pk)
     app.SuprvDefinitelyReject = True
+    app.RejectionReason = request.POST.get("RejectionReason")
     app.save()
     apps = InternshipApp.objects.all()
     return render(request,"SupervisorHome.html",{'appslist' : apps})
@@ -278,8 +304,9 @@ def DefinitelyRejectBySupervisor(request, pk):
 def DefinitelyRejectByAdmin(request, pk):
     app = InternshipApp.objects.get(id=pk)
     app.MasterDefinitelyReject = True
+    app.RejectionReason = request.POST.get("RejectionReason")
     app.save()
-    apps = InternshipApp.objects.all()
+    apps = InternshipApp.objects.filter(studentdep=request.user.admin.dep)
     return render(request,"AdminHome.html",{'appslist' : apps})
 
 @allowed_users(allowed_roles=['Supervisor'])
@@ -287,6 +314,7 @@ def DefinitelyRejectByAdmin(request, pk):
 def DeclinedBySupervisor(request, pk):
     app = InternshipApp.objects.get(id=pk)
     app.approvedBySupervisor = False
+    app.RejectionReason = request.POST.get("RejectionReason")
     app.save()
     apps = InternshipApp.objects.all()
     return render(request,"SupervisorHome.html",{'appslist' : apps})
@@ -294,9 +322,41 @@ def DeclinedBySupervisor(request, pk):
 @login_required(login_url='Signin')
 @allowed_users(allowed_roles=['admin'])
 def AdminHome(request):
-    apps = InternshipApp.objects.all()
+    apps = InternshipApp.objects.filter(studentdep=request.user.admin.dep)
     total_apps = apps.count()
-    return render(request,"AdminHome.html",{'appslist' : apps,'total_apps': total_apps})
+    admin = InternshipApp.objects.filter(depMaster = request.user)
+    attendence = Attendence.objects.filter(intern__in=admin.values('applicant'))
+    marks = Marks.objects.filter(intern__in=admin.values('applicant'))
+    return render(request,"AdminHome.html",{'appslist' : apps,'total_apps': total_apps, 'attendence': attendence ,'marks': marks})
+
+@login_required(login_url='Signin')
+@allowed_users(allowed_roles=['admin'])
+def ViewNewAccounts(request):
+    accounts = Student.objects.filter(approvedAccount = False)
+    total_accounts = accounts.count()
+    return render(request,"NewAccounts.html",{'accountslist' : accounts,'total_accounts': total_accounts})
+
+@login_required(login_url='Signin')
+@allowed_users(allowed_roles=['admin'])
+def ApproveAccount(request, pk):
+    accounts = Student.objects.filter(approvedAccount = False)
+    total_accounts = accounts.count()
+    student = Student.objects.get(id=pk)
+    email = student.username.email
+    if request.method == 'POST':
+        verification_code = get_random_string(length=6)
+        verification_obj = VerificationCode(user=student.username, code=verification_code)
+        verification_obj.save()
+        send_mail(
+        'Account Verification',
+        f'Your verification code is: {verification_code}',
+        'imene.hamida18@gmail.com',
+        [email],
+        fail_silently=False,
+        )
+        student.approvedAccount = True
+        student.save()
+    return render(request,"NewAccounts.html",{'accountslist' : accounts,'total_accounts': total_accounts})
 
 
 @login_required(login_url='Signin')
@@ -389,10 +449,11 @@ def EditOffer(request, pk):
 @allowed_users(allowed_roles=['Supervisor'])
 @login_required(login_url='Signin')
 def Applications(request):
-    supervisors = InternshipApp.objects.filter(internMaster = request.user)
+    supervisors = InternshipApp.objects.filter(internMaster = request.user,approvedByMaster= True)
     attendence = Attendence.objects.filter(intern__in=supervisors.values('applicant'))
     total = supervisors.count()
     return render(request,"Applications.html",{'appslist' : supervisors ,'total_apps' : total, 'attendence': attendence})
+
 
 @allowed_users(allowed_roles=['Supervisor'])
 @login_required(login_url='Signin')
@@ -423,8 +484,9 @@ def SupervisorProfile(request):
 @login_required(login_url='Signin')
 def InternOffers(request):
     offers = InternOffer.objects.all()
+    app = InternshipApp.objects.all()
     total = offers.count()
-    return render(request,"InternOffers.html",{'offers' : offers ,'total_offers' : total})
+    return render(request,"InternOffers.html",{'offers' : offers ,'total_offers' : total , 'app': app})
 
 @allowed_users(allowed_roles=['univStudents'])
 @login_required(login_url='Signin')
@@ -533,26 +595,83 @@ def LogoutUser(request):
     context = { }
     return render(request, "Home.html", context)
 
+@unauthenticated_user
+def othersSignin(request):
+    if request.method == 'POST':
+        username = request.POST.get('fullname')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        # Handle login for admin and supervisor roles
+        if not (username and email and password):
+            messages.error(request, 'Please fill in all the required fields!')
+        else:
+            user = authenticate(request, username=username, email=email, password=password)
+
+            if user is not None:
+                if not hasattr(user, 'student'):
+                    login(request, user)
+                    return redirect('StudentHome')  # Redirect to the appropriate admin/supervisor home page
+                else:
+                    messages.error(request, 'You are not authorized to sign in here as a student!')
+            else:
+                messages.error(request, 'Invalid credentials!')
+
+    context = {}
+    return render(request, "othersSignIn.html", context)
+
 
 @unauthenticated_user
 def Signin(request):
-        if request.method == 'POST':
-            username = request.POST.get('fullname')
-            email = request.POST.get('email')
-            password = request.POST.get('password')
+    if request.method == 'POST':
+        username = request.POST.get('fullname')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = User.objects.get(username=username)
+        try:
+            
+            if hasattr(user, 'student'):
+                # Handle verification code for university students
+                try:
+                    verification_obj = VerificationCode.objects.get(user=user)
+                    entered_code = request.POST.get('verification_code')
 
-            if not (username and email and password):
-                messages.error(request, 'Please fill in all the required fields!')
+                    if entered_code == verification_obj.code:
+                        if not (username and email and password):
+                            messages.error(request, 'Please fill in all the required fields!')
+                        else:
+                            print("Username:", username)
+                            print("Email:", email)
+                            print("Password:", password)
+                            user = authenticate(request, username=username, email=email, password=password)
+                            print("User after authentication:", user)  # Add this line to print the user object
+
+                            if user is not None:
+                                login(request, user)
+                                return redirect('StudentHome')
+                            else:
+                                messages.error(request, 'Invalid credentials!')
+
+                    else:
+                        messages.error(request, 'Invalid verification code.')
+                        return redirect('Signin')
+
+                except VerificationCode.DoesNotExist:
+                    messages.error(request, 'Invalid verification code,please wait for administration approval')
+                    return redirect('Signin')
+
             else:
-                user = authenticate(request, username=username, email=email, password=password)
+                # Handle login for admin and supervisor roles
+                messages.error(request, 'your credentials does not match a student account')
 
-                if user is not None:
-                    login(request, user)
-                    return redirect('StudentHome')
-                else:
-                    messages.error(request, 'Invalid credentials!')
-        context = { }
-        return render(request, "SignIn.html", context)
+        except User.DoesNotExist:
+            messages.error(request, 'User does not exist.')
+            return redirect('Signin')
+
+    context = {}
+    return render(request, "SignIn.html", context)
+
+
 
 @unauthenticated_user
 def Signup(request):
@@ -573,7 +692,6 @@ def Signup(request):
             Student_group = Group.objects.get(name='univStudents') 
             user.groups.add(Student_group)
             Student.objects.create(username=user)
-            login(request, user)
             return redirect('Signin')
             messages.success(request, "Account Created successfully")
     context = {'form': form }
@@ -624,7 +742,7 @@ def CreateSupervisor(request):
             user.save()
             supervisor_group = Group.objects.get(name='Supervisor') 
             user.groups.add(supervisor_group)
-            Supervisor.objects.create(fullname=user,email=email,password=password)
+            Supervisor.objects.create(username=user,email=email,password=password)
             #your_model_instance = InternshipApp(internMaster=user)--the right thing to do instead is to write:
             #InternshipApp.objects.create(internMaster=user)
             #your_model_instance.save()--to remove

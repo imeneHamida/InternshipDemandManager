@@ -5,9 +5,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css" integrity="sha512-pVCM5+SN2+qwj36KonHToF2p1oIvoU3bsqxphdOIWMYmgr4ZqD3t5DjKvvetKhXGc/ZG5REYTT6ltKfExEei/Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css" integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
 <style>
+    .labels{
+        font-weight: bold;
+        color: rgb(13, 16, 42);
+    }
     tr.appRow{
         background-color: #f0f0f0;
-        border-radius: 100px;
         box-shadow: 4px 1px 2px rgba(0, 0, 0, 0.1);
         padding-top: 10px;
         padding-bottom: 10px;
@@ -24,6 +27,12 @@
     justify-content: center;
 }
 </style>
+<script>
+    function setFormAction(actionUrl) {
+        var form = document.getElementById('attendanceForm');
+        form.action = actionUrl;
+    }
+</script>
 {% if total_apps == 0 %}
 <body id="noApps" class="noApps">
   <div class="text-center">
@@ -66,43 +75,43 @@
                                 <th scope="col">Department</th>
                                 <th scope="col">Student Card Number</th>
                                 <th scope="col">Diplome</th>
-                                <th scope="col" style="width: 50px;"></th>
-                                <th scope="col" style="width: 50px;">Action</th>
+                                <th scope="col" style="width: 115px;"></th>
+                                <th scope="col" style="width: 115px;">Action</th>
                                 <th scope="col"> </th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for i in appslist %}
                             <tr class="appRow">
-                                <td><a type="button" class="bi bi-three-dots" data-bs-toggle="modal" data-bs-target="#exampleModal"></a>
+                                <td><a type="button" class="bi bi-three-dots" data-bs-toggle="modal" data-bs-target="#exampleModal{{ i.id }}"></a>
                               <!-- Modal -->
-                              <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal fade" id="exampleModal{{ i.id }}" tabindex="-1" aria-labelledby="exampleModalLabel{{ i.id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-scrollable">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Application Details</h1>
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel{{ i.id }}">Application Details</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <div>
-                                            <div class="row mt-2">
-                                                <div class="col-md-6"><h6 class="mb-0">Name :</h6> {{i.applicant}}</div>
-                                                <div class="col-md-6"><label class="labels">Surname :</label> Last name</div>
-                                            </div>
+                                        <div class="row mt-3">
+                                            <div class="col-md-12"><label class="labels">Student Full Name :</label> {{i.studentName}}</div>
+                                            <hr class="mx-n3">
+                                            <div class="col-md-12"><label class="labels">Supervisor Name :</label>  {{i.sprvisorName}}</div>
+                                            <hr class="mx-n3">
+                                            <div class="col-md-12"><label class="labels">Email address :</label>  {{i.sprvisorEmail}}</div>
+                                            <hr class="mx-n3">
+                                            <div class="col-md-12"><label class="labels">Phone number :</label>  {{i.sprvisorTel}}</div>
+                                            <hr class="mx-n3">
+                                            <div class="col-md-12"><label class="labels">Fax :</label>  {{i.sprvisorFax}}</div>
                                             <div class="row mt-3">
-                                                <hr class="mx-n3">
-                                                <div class="col-md-12"><label class="labels">Supervisor Name :</label>  {{i.sprvisorName}}</div>
-                                                <hr class="mx-n3">
-                                                <div class="col-md-12"><label class="labels">Email address :</label>  {{i.sprvisorEmail}}</div>
-                                                <hr class="mx-n3">
-                                                <div class="col-md-12"><label class="labels">Phone number :</label>  {{i.sprvisorTel}}</div>
-                                                <hr class="mx-n3">
-                                                <div class="col-md-12"><label class="labels">Fax :</label>  {{i.sprvisorFax}}</div>
-                                                <div class="col-md-12"><label class="labels">Company name :</label>  {{i.companyName}}</div></div>
+                                            <div class="col-md-6"><label class="labels">Company name :</label>  {{i.companyName}}</div>
+                                            <div class="col-md-6"><label class="labels">Company address :</label>  {{i.companyAdrss}}</div></div>
+                                            <hr class="mx-n3">
+                                            <div class="col-md-12"><label class="labels">Internship theme :</label>  {{i.theme}}</div>
                                             <div class="row mt-3">
-                                                <div class="col-md-6"><label class="labels">Internship starting date:</label><br>{{i.strtDate}}</div>
-                                                <div class="col-md-6"><label class="labels">Ending date:</label><br>{{i.endDate}}</div>
-                                            </div>
+                                            <div class="col-md-6"><label class="labels">Internship starting date:</label><br>{{i.strtDate}}</div>
+                                            <div class="col-md-6"><label class="labels">Ending date:</label><br>{{i.endDate}}</div>
+                                        </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -119,27 +128,29 @@
                                 <td>{{i.studentdep}}</td>
                                 <td>{{i.studentCard}}</td>
                                 <td>{{i.prepDeplome}}</td>
-                                {% if i.approvedBySupervisor == True %}
+                                {% if i.SuprvDefinitelyReject == True %}
+                                <td> </td>
                                 <td>
-                                    <form action="{% url 'StudentRating' i.id %}" method="POST">{% csrf_token %}<button type="submit" class="btn btn-outline-success">Rate</button></form>
-                                </td>
+                                <span style="font-size: 15px; color: rgb(207, 60, 60);">Rejected</span>
+                                <span id="boot-icon" class="bi bi-x" style="font-size: 20px; color: rgb(207, 60, 60); -webkit-text-stroke-width: 1.5px; opacity: 0.9; display: inline-block;"></span>
+                                </td><td> </td></tr>
+                                {% elif i.approvedBySupervisor == True %}
                                 <td>
-                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#Attend">
-                                        Take Presence
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#Attend{{ i.id }}">
+                                        Take roll
                                       </button>
                                   <!-- Modal -->
-                                  <div class="modal fade" id="Attend" tabindex="-1" aria-labelledby="AttendLabel" aria-hidden="true">
+                                  <div class="modal fade" id="Attend{{ i.id }}" tabindex="-1" aria-labelledby="AttendLabel{{ i.id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="AttendLabel">Confirmation Message</h1>
+                                        <h1 class="modal-title fs-5" id="AttendLabel{{ i.id }}">Confirmation Message</h1>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="{% url 'InternIsNotpresent' i.id %}" method="POST">
+                                            <form  id="attendanceForm" method="POST">
                                                 {% csrf_token %}
-                                                <form action="{% url 'InternIspresent' i.id %}" method="POST">
-                                                    {% csrf_token %}
+                                                
                                                     <div class="row">
                                                     <div class="col">
                                                         <div class="form-group">
@@ -162,63 +173,24 @@
                                                       </div>
                                                     <div class="d-flex align-items-center">
                                                         <span>Was the intern..?</span>
-                                                        <button type="submit" class="btn btn-success ms-2 me-3">Present</button>
-                                                </form>
-                                                <button type="submit" class="btn btn-danger">Absent</button></div>
+                                                        <button type="submit" class="btn btn-success ms-2 me-3" onclick="setFormAction('{% url 'InternIspresent' i.id %}')">Present</button>
+                                                        <button type="submit" class="btn btn-danger" onclick="setFormAction('{% url 'InternIsNotpresent' i.id %}')">Absent</button></div>
                                             </form>
                                         </div>
                                     </div>
                                     </div>
                                 </div>
                             <!-- End Modal -->
+                                <td>
+                                    <form action="{% url 'StudentRating' i.id %}" method="POST">{% csrf_token %}<button type="submit" class="btn btn-outline-success">Evaluate</button></form>
+                                </td>
                                 </td>
                                     {% if i.rated == True %}
                                 <td>
                                     <form action="{% url 'Certificate' i.id %}" method="POST">{% csrf_token %}<button type="submit" class="btn btn-success">Print Certificate</button></form>
                                 </td>{% else %}
                                 <td>
-                                    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#viewMarks">View Presence</button>
-                                        <!-- Modal -->
-                                        <div class="modal fade" id="viewMarks" tabindex="-1" aria-labelledby="viewMarksLabel" aria-hidden="true">
-                                          <div class="modal-dialog modal-dialog-scrollable">
-                                            <div class="modal-content">
-                                              <div class="modal-header">
-                                              <h1 class="modal-title fs-5" id="viewMarksLabel">Student Presence</h1>
-                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                              </div>
-                                              <div class="modal-body">
-                                                <div>
-                                                  <table>
-                                                    <thead>
-                                                    <tr>
-                                                      <th scope="col" style="width: 170px;">The Day</th>
-                                                      <th scope="col" style="width: 100px;">Working Hours</th>
-                                                      <th scope="col" style="width: 70px;">Presence</th>
-                                                      <th scope="col" style="width: 200px;">Observation</th>
-                                                    </tr></thead>
-                                                    <tbody>
-                                                    {% for i in attendence %}
-                                                    <tr>
-                                                      <td>{{i.internshipDay}}</td>
-                                                      <td><span class="ms-3">{{i.workingHours}}</span></td>
-                                                      <td> 
-                                                        {% if i.isPresent == True %}<span id="boot-icon" class="bi bi-check ms-3" style="font-size: 30px; color: rgb(98, 203, 105); -webkit-text-stroke-width: 1.5px; opacity: 0.9;"></span>
-                                                        {% elif i.isPresent == False %}<span id="boot-icon" class="bi bi-x ms-3" style="font-size: 30px; color: rgb(207, 60, 60); -webkit-text-stroke-width: 1.5px; opacity: 0.9;"></span>
-                                                        {% endif %}
-                                                        </td>
-                                                      <td>{{i.observation}}</td>
-                                                    </tr>
-                                                    {% endfor %}
-                                                    </tbody>
-                                                  </table>
-                                                </div></div>
-                                               <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div>
-                                            </div>
-                                           </div>
-                                          </div>
-                                      </div>
-                                  <!-- End Modal -->
+                                    <form action="{% url 'ViewPresence' i.id %}" method="POST">{% csrf_token %}<button type="submit" class="btn btn-outline-success" >View Presence</button></form>
                                 </td>
                                 {% endif %}
                                 {% else %}
@@ -235,7 +207,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                         You sure!                                       
+                                            Are you certain about proceeding with this action?                                       
                                         </div>
                                         <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -276,7 +248,33 @@
                             <!-- End Modal -->
                                 </td>
                                 <td>
-                                    <form action="{% url 'DefinitelyRejectBySupervisor' i.id %}" method="POST">{% csrf_token %}<button type="submit" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Definitely reject</button></form>
+                                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#Definitelyrejectspr{{ i.id }}">
+                                        Definitely reject
+                                      </button>
+                                  <!-- Modal -->
+                                  <div class="modal fade" id="Definitelyrejectspr{{ i.id }}" tabindex="-1" aria-labelledby="DefinitelyrejectsprLabel{{ i.id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="DefinitelyrejectsprLabel">Confirmation Message</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                        <form action="{% url 'DefinitelyRejectBySupervisor' i.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <div class="form-outline mb-4">
+                                            <label class="mb-2">Tell applicant what is the reason for your Definitely Rejection:</label>
+                                            <textarea class="form-control" name="RejectionReason" rows="5" placeholder="Write the rejection reason.." required></textarea>
+                                        </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Send Reason</button></form>
+                                    </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            <!-- End Modal -->
                              </td>{% endif %}
                             </tr>
                             {% endfor %}{% endif %}

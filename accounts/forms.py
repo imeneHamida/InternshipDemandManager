@@ -18,7 +18,7 @@ class CustomEmailValidator(EmailValidator):
 
 class CreationUserForm(forms.Form):
     username = forms.CharField(
-        max_length=9,
+        max_length=50,
         widget=forms.TextInput(attrs={"placeholder": "Enter Your Matric Number"}),
         validators=[MinLengthValidator(1, message="Username field is required.")]
     )
@@ -109,11 +109,11 @@ class Rating(ModelForm):
         widgets = {
         'internMaster': forms.Select(attrs={'class': 'form-control'}),
         'workPlan': forms.Textarea(attrs={'class': 'form-control','placeholder': 'Explain Theme of the intenrship..','rows':3, 'cols':5,'style': 'max-width: 100%; Height: 100px;overflow: auto;'}),
-        'gnrlDiscipline': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Rate out of /4..'}),
-        'workAptitudes': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Rate out of /4..'}),
-        'initiative': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Rate out of /4..'}),
-        'innovationAbilities': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Rate out of /4..'}),
-        'knowledgeAcquired': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Rate out of /4..'}),
+        'gnrlDiscipline': forms.NumberInput(attrs={'class': 'form-control','placeholder': 'Rate out of /4..','min': 0,'max': 4,'step': 1}),
+        'workAptitudes': forms.NumberInput(attrs={'class': 'form-control','placeholder': 'Rate out of /4..','min': 0,'max': 4,'step': 1}),
+        'initiative': forms.NumberInput(attrs={'class': 'form-control','placeholder': 'Rate out of /4..','min': 0,'max': 4,'step': 1}),
+        'innovationAbilities': forms.NumberInput(attrs={'class': 'form-control','placeholder': 'Rate out of /4..','min': 0,'max': 4,'step': 1}),
+        'knowledgeAcquired': forms.NumberInput(attrs={'class': 'form-control','placeholder': 'Rate out of /4..','min': 0,'max': 4,'step': 1}),
         'Appreciation': forms.Textarea(attrs={'class': 'form-control','placeholder': 'Write Overall Appreciation..','rows':3, 'cols':5,'style': 'max-width: 100%; Height: 100px;overflow: auto;'}),} 
 
 

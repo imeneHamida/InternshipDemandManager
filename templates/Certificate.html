@@ -13,7 +13,10 @@
             font-family: Arial, sans-serif;
         }
         
-        
+        #text{
+            color: rgb(1, 1, 17);
+            font-weight: bold;
+        }
         .certificate {
             margin: 20px;
             /*border: 1px solid black;text-align:center;*/
@@ -37,18 +40,18 @@
     <div class="certificate">
         <h3 style="text-align:center;"><i>Democratic and Popular Republic of Algeria</i></h3>
         <h1 style="text-align:center;"><b>INTERNSHIP CERTIFICATE</b></h1>
-        <p>I, the undersigned <span id="responsable-stage">{{i.internMaster}}</span>,
-        internship supervisor at <span id="entreprise">........................................</span>,
-        certify that the student <span id="etudiant">{{i.intern}}</span>,
-        born on <span id="date-naissance">........................................</span>
-        in <span id="lieu-naissance">........................................</span>,
+        <p>I, the undersigned <span id="text">{{i.internMaster}}</span>,
+        internship supervisor at <span id="text">{{i.companyName}}</span>,
+        certify that the student <span id="text">{{i.intern}}</span>,
+        born on <span id="text"></span>
+        in <span id="text"></span>,
         Registered at the University of Constantine 2,
         has successfully completed an internship in the field of
-        <span id="filiere">........................................</span>
-        at <span id="lieu-stage">........................................</span>,
-        <span id="periode">........................................</span>.</p>
+        <span id="text">{{i.workPlan}}</span>
+        at <span id="text">{{i.companyAdrss}}</span>,for
+        <span id="text">{{i.duree}}</span>.</p>
         
-        <p style="text-align: center;">Given at <span id="lieu">........................................</span> on <span id="date">........................................</span>.</p>
+        <p style="text-align: center;">Given at <span id="text">{{i.companyAdrss}}</span> on <span id="text">{{i.createdDate}}</span>.</p>
     </div>
     
     <div class="signatures">

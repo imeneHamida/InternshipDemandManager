@@ -12,8 +12,17 @@ class User(AbstractUser):
     def __str__(self):
         return str(self.username)
 
+class VerificationCode(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    code = models.CharField(max_length=6)
+
+    def __str__(self):
+        return str(self.user)
+
 class Student(models.Model):
-    username = models.OneToOneField(User,null=True,blank=True, on_delete=models.CASCADE)
+    username = models.OneToOneField(User,null=True,blank=True, on_delete=models.CASCADE,related_name='student')
+    approvedAccount = models.BooleanField(max_length=100,null=True,blank=True,default=False)
+    verifiedLogin = models.BooleanField(max_length=100,null=True,blank=True,default=False)
     FullName = models.CharField(max_length=100,null=True)
     university = models.CharField(max_length=100,null=True)
     department = models.CharField(max_length=100,null=True)
@@ -37,7 +46,7 @@ class Admin(models.Model):
         return str(self.fullname)
 
 class Supervisor(models.Model):
-    username = models.OneToOneField(User,null=True,blank=True, on_delete=models.CASCADE)
+    username = models.OneToOneField(User,null=True,blank=True, on_delete=models.CASCADE,related_name='supervisor')
     fullname = models.CharField(max_length=100,null=True)
     email= models.EmailField(null=True,blank=True)
     Tel = models.IntegerField(null=True)
@@ -109,6 +118,7 @@ class InternOffer(models.Model):
 class InternshipApp(models.Model):
     applicant = models.ForeignKey(User,related_name="std",null=True,blank=True,on_delete= models.SET_NULL)
     internMaster = models.ForeignKey(User,related_name="spv",null=True,blank=True,on_delete= models.SET_NULL)
+    depMaster = models.ForeignKey(User,related_name="adm",null=True,blank=True,on_delete= models.SET_NULL)
     approvedByMaster= models.BooleanField(null=True,blank=True)
     approvedBySupervisor= models.BooleanField(null=True,blank=True) 
     MasterDefinitelyReject= models.BooleanField(null=True,blank=True) 

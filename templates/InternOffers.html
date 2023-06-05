@@ -8,7 +8,7 @@
 
 /* ===== Career ===== */
 .career-form {
-  background-color: #5ea780;
+  background-color: #00B05B;
   border-radius: 5px;
   padding: 0 16px;
 }
@@ -99,9 +99,8 @@ ul {
 .job-box .img-holder {
   height: 65px;
   width: 65px;
-  background-color: #5ea780;
-  background-image: -webkit-gradient(linear, left top, right top, from(rgba(78, 99, 215, 0.9)), to(#5ea780));
-  background-image: linear-gradient(to right, rgba(78, 99, 215, 0.9) 0%, #5ea780 100%);
+  background-color: #00B05B;
+  background-image: linear-gradient(to right, #369467 35%, #00B05B 100%);
   font-family: "Open Sans", sans-serif;
   color: #fff;
   font-size: 22px;
@@ -124,22 +123,13 @@ ul {
   padding: 15px;
   text-align: center;
   border-radius: 10px 10px 0 0;
-  background-image: -webkit-gradient(linear, left top, right top, from(rgba(78, 99, 215, 0.9)), to(#5a85dd));
-  background-image: linear-gradient(to right, rgba(78, 99, 215, 0.9) 0%, ##5ea780 100%);
+  background-image: linear-gradient(to right, #00B05B, #5ea780 100%);
 }
 
 .job-overview {
   -webkit-box-shadow: 0 0 35px 0 rgba(130, 130, 130, 0.2);
           box-shadow: 0 0 35px 0 rgba(130, 130, 130, 0.2);
   border-radius: 10px;
-}
-
-@media (min-width: 992px) {
-  .job-overview {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 70px;
-  }
 }
 
 .job-overview .job-detail ul {
@@ -191,7 +181,7 @@ ul {
 
 <div class="container">
             <div class="row">
-                 <div class="col-lg-10 mx-auto mb-4">
+                 <div class="col-lg-10 mx-auto mb-2 mt-3">
                     <div class="section-title text-center ">
                         <h3 class="top-c-sep">Unlock your dream internship opportunity</h3>
                         <p>Explore internship opportunities effortlessly through our customized filtering system. Find the perfect match for your goals and interests with minimal effort.</p>
@@ -239,7 +229,7 @@ ul {
                         </form>
 
                         <div class="filter-result">
-                            <p class="mb-30 ff-montserrat">Total internship offers : {{total_offers}}</p>
+                            <p class="mt-2 ff-montserrat">Total internship offers : {{total_offers}}</p>
                             {% for i in offers %}
                             <div class="job-box d-md-flex align-items-center justify-content-between mb-30">
                                 <div class="job-left my-4 d-md-flex align-items-center flex-wrap">
@@ -264,9 +254,11 @@ ul {
                                         </ul>
                                     </div>
                                 </div>
+                                {% if request.user.student.studenTel != None %}
                                 <div class="job-right my-4 flex-shrink-0">
                                     <form action="{% url 'ApplyForOffer' i.id %}" method="POST">{% csrf_token %}<button type="submit"  class="btn d-block w-100 d-sm-inline-block btn-light">Apply now</button></form>
                                 </div>
+                                {% endif %}
                             </div>
                             {% endfor %}
 

@@ -1,0 +1,54 @@
+{% extends './adminNavBar.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">  
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css" integrity="sha512-pVCM5+SN2+qwj36KonHToF2p1oIvoU3bsqxphdOIWMYmgr4ZqD3t5DjKvvetKhXGc/ZG5REYTT6ltKfExEei/Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css" integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
+<style>
+    .labels{
+        font-weight: bold;
+        color: rgb(13, 16, 42);
+    }
+    </style>
+<div class="container mt-5">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <h5 class="card-title">New Accounts List <span class="text-muted fw-normal ms-2">({{total_accounts}})</span></h5>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="">
+                <div class="table-responsive" style="overflow: auto; max-height: 1000px; max-width: 1200px;">
+                    <table class="table project-list-table table-nowrap align-middle table-borderless">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width: 10px;"> </th>
+                                <th scope="col" style="width: 160px;">Username</th>
+                                <th scope="col" style="width: 160px;">Email</th>
+                                <th scope="col" style="width: 160px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if total_accounts == 0 %}
+                            <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><span style="color: hsla(157, 74%, 43%, 0.993);"><b>There is no applications to appear</b></span></td></tr>
+                            {% else %}
+                        {% for i in accountslist %}
+                            <tr>
+                                <td><a class="bi bi-three-dots"></a>
+                                <td>{{i.username}}</a></td>
+                                <td>{{i.username.email}}</td>
+                                <td>
+                                    <form action="{% url 'ApproveAccount' i.id %}" method="POST">{% csrf_token %}
+                                        <button type="submit" class="btn btn-outline-success" >Approve Account <span id="boot-icon" class="bi bi-check" style="font-size: 20px; color: rgb(98, 203, 105); -webkit-text-stroke-width: 1.5px; opacity: 0.9; display: inline-block;"></span></button>
+                                    </form>
+                                </td>
+                        {% endfor %}
+                        {% endif %}
+{% endblock %}
