@@ -42,7 +42,7 @@
                     <div class="card" style="border-radius: 15px;">
                        <div class="card-body">
                             <div class="form-group">
-                                <form method="POST" action="">
+                                <form method="POST" action="{% if offer.pk %}{% url 'EditOffer' pk=offer.pk %}{% else %}{% url 'CreateOffer' %}{% endif %}">
                                     {% csrf_token %}
                                     <section class="infoFields">
                                     <div class="row align-items-center pt-4 pb-3">
@@ -50,7 +50,7 @@
                                         <h6 class="mb-0">Company Name</h6>
                                         </div>
                                         <div class="col-md-9 pe-5">
-                                            <input type="text" class="form-control" id="Totalworkinghours" placeholder="Your Company Name" name="CompanyName" required>
+                                            {{form.companyName}}                                        
                                         </div>
                                     </div>
 
@@ -59,7 +59,7 @@
                                         <h6 class="mb-0">Company Address</h6>
                                         </div>
                                         <div class="col-md-9 pe-5">
-                                            <input type="text" class="form-control" id="Totalworkinghours" placeholder="Address.." name="CompanyAddress" required>
+                                            {{form.companyAdrss}}
                                         </div>
                                     </div>
 
@@ -68,7 +68,7 @@
                                         <h6 class="mb-0">Theme</h6>
                                         </div>
                                         <div class="col-md-9 pe-5">
-                                            <input type="text" class="form-control" id="Totalworkinghours" placeholder="Give a title to your offer.." name="Theme" required>
+                                            {{form.theme}}                                         
                                         </div>
                                     </div>
 
@@ -77,7 +77,7 @@
                                         <h6 class="mb-0">Salary</h6>
                                         </div>
                                         <div class="col-md-9 pe-5">
-                                            <input type="number" class="form-control" id="Totalworkinghours" placeholder="Internship Salary $" name="Salary" min="0">
+                                            {{form.Salary}}                                          
                                         </div>
                                     </div>
 
@@ -88,7 +88,7 @@
                                                     <h6 class="mb-0">Full Period</h6>
                                                 </div>
                                                 <div class="md-form md-outline input-with-post-icon datepicker" inline="true">
-                                                    <input type="text" placeholder="Internship period" name="duree" id="duree" class="form-control" required>
+                                                    {{form.duree}}
                                                 </div>
                                             </div>
                                         </div>
@@ -97,10 +97,10 @@
                                                 <div class="col-md-6 ps-5 mb-3">
                                                     <h6 class="mb-0">Starting Date</h6>
                                                 </div>
-                                                <div id="date-picker-example" class="md-form md-outline input-with-post-icon datepicker" inline="true">
-                                                    <input data-provide="datepicker" placeholder="Select date" name="StartingDate" type="text" id="StartingDate" class="form-control {% if error_message %}error-input{% endif %}" data-date-format="yyyy-mm-dd" required>
-                                                    <i class="fas fa-calendar input-prefix"></i>
-                                                </div>
+                                                <div class="md-form md-outline input-with-post-icon datepicker" inline="true">
+                                                {{form.strtDate}}
+                                                </div>       
+
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -108,16 +108,21 @@
                                                 <div class="col-md-6 ps-5 mb-3">
                                                     <h6 class="mb-0">Ending Date</h6>
                                                 </div>
-                                                <div id="date-picker-example" class="md-form md-outline input-with-post-icon datepicker" inline="true">
-                                                    <input data-provide="datepicker" placeholder="Select date" name="EndingDate" type="text" id="EndingDate" class="form-control {% if error_message %}error-input{% endif %}" data-date-format="yyyy-mm-dd" required>
-                                                    <i class="fas fa-calendar input-prefix"></i>
-                                                </div>
+                                                <div class="md-form md-outline input-with-post-icon datepicker" inline="true">
+                                                {{form.endDate}} 
+                                                </div>  
                                             </div>
-                                        </div>
-                                        {% if error_message %}
-                                        <p class="error-message">{{ error_message }}</p>
-                                        {% endif %}
-                                    </div>                                    
+                                            {% if form.errors %}
+                                            <div class="alert alert-danger">
+                                              <ul>
+                                                {% for field_errors in form.errors.values %}
+                                                  {% for error in field_errors %}
+                                                    <li>{{ error }}</li>
+                                                  {% endfor %}
+                                                {% endfor %}
+                                              </ul>
+                                            </div>
+                                          {% endif %}                                 
 
                                     </section>
                                     <hr class="mx-n3">

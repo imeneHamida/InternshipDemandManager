@@ -55,7 +55,7 @@
 
                       <div class="col">
                         <!-- Simple link -->
-                        <a href="{% url 'othersSignin' %}">I'm not student?</a>
+                        <a href="#">Forgot password?</a>
                       </div>
                     </div>
                
@@ -69,29 +69,9 @@
                     
                     <!-- Submit button -->
                     <div class="col-md-12 text-center">
-                      <button data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-success mb-3 px-4 rounded-pill">Sign in</button>
+                      <button type="submit" class="btn btn-success mb-3 px-4 rounded-pill">Sign in</button>
                     </div>
-                    
-                        <!-- Modal -->
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                          <div class="modal-dialog modal-dialog-scrollable">
-                          <div class="modal-content">
-                              <div class="modal-header">
-                              <h1 class="modal-title fs-5" id="exampleModalLabel">Verification Alert</h1>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                              </div>
-                              <div class="modal-body">
-                                  <label class="form-label" for="verification_code">Please enter your <b>6-digit verification code</b>. Check your email for the code. If you haven't received it yet, please wait for administration approval.</label>
-                                  <input type="text" id="verification_code" class="form-control" name="verification_code" placeholder="### ### ###" required>
-                                </div>
-                              <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                              <button type="submit" class="btn btn-success">Verify</button>
-                              </div>
-                          </div>
-                          </div>
-                      </div>
-                  <!-- End Modal -->
+                  
                   
                     <!-- Register buttons -->
                     <p class="text-center text-muted mt-3 mb-0">Don't have an account? <a href="{% url 'Signup' %}"

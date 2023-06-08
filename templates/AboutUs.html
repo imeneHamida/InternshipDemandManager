@@ -1,12 +1,20 @@
 {% extends './navbar.html' %}
-
+{% load static %}
 {% block content %}
+<section style="background-color: #f0f0f0; height: 120vh;">
+     <div class="container" data-aos="fade-up" >
+          <header class="section-header">
+               <h1>About us!</h1>
+             </header>
+               <div class="row">
+                 <div class="col-lg-6 d-flex flex-column justify-content-center">
+                    <h5>No more waiting in the dark or wondering what's happening with your application - with our platform, you can stay informed every step of the way. Plus, our user-friendly interface makes it simple to navigate and manage your application status. So why wait? Take control of your internship application today and unlock your path to success! Start your journey now and discover exciting opportunities, connect with industry professionals, and showcase your skills to top companies. Don't miss out on the chance to gain valuable experience and kickstart your career. Join our platform and make your mark in the professional world. It's time to turn your aspirations into achievements!</h5>
 
-<h4>About us:</h4><br>
-     <pr>No more waiting in the dark or wondering what's <br>
-     happening with your application - with our platform, you can stay informed <br>
-     every step of the way. Plus, our user-friendly interface makes it simple <br>
-     to navigate and manage your application status. So why wait? Take control of your <br>
-     internship application today and unlock your path to success!</pr>
-    
+                 </div>
+                 <div class="col-lg-6 hero-img" data-aos="zoom-out" data-aos-delay="200">
+                    <img src="{% static 'imgs/aboutus.png' %}" class="img-fluid" alt="">
+                    </div>
+               </div>
+     </div>
+</section> 
 {% endblock %}

@@ -1,5 +1,5 @@
 {% extends './adminNavBar.html' %}
-
+{% load static %}
 {% block content %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">  
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css" integrity="sha512-pVCM5+SN2+qwj36KonHToF2p1oIvoU3bsqxphdOIWMYmgr4ZqD3t5DjKvvetKhXGc/ZG5REYTT6ltKfExEei/Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -9,7 +9,22 @@
         font-weight: bold;
         color: rgb(13, 16, 42);
     }
+    .noApps{
+    background-color: #f0f0f0;
+    }
     </style>
+{% if total_accounts == 0 %}
+<body id="noApps" class="noApps">
+    <div class="text-center">
+        <div class="row">
+            <div class="col-md-12">
+                <img src="{% static 'imgs/nothing.png' %}" alt="Image Description" class="image-style mb-3" id="image1">
+                <h5>We could not find any account in this section! </h5>
+            </div>
+        </div>
+    </div>
+    </body>
+{% else %}
 <div class="container mt-5">
     <div class="row align-items-center">
         <div class="col-md-6">
@@ -32,13 +47,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% if total_accounts == 0 %}
-                            <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td><span style="color: hsla(157, 74%, 43%, 0.993);"><b>There is no applications to appear</b></span></td></tr>
-                            {% else %}
                         {% for i in accountslist %}
                             <tr>
                                 <td><a class="bi bi-three-dots"></a>

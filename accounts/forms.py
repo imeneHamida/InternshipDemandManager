@@ -82,8 +82,8 @@ class CreationIntenApp(ModelForm):
         'companyAdrss': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Street Address..'}),
         'theme': forms.Textarea(attrs={'class': 'form-control','placeholder': 'Explain Theme of the intenrship..','rows':3, 'cols':5,'style': 'max-width: 100%; Height: 100px;overflow: auto;'}),
         'duree' : forms.TextInput(attrs={'class': 'form-control','placeholder': 'Period..'}),
-        'strtDate': forms.DateInput(attrs={'class': 'form-control','placeholder': 'Year-Month-Day.'}),
-        'endDate': forms.DateInput(attrs={'class': 'form-control','placeholder': 'Year-Month-Day.'}),}
+        'strtDate': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Select date', 'data-provide': 'datepicker'}),
+        'endDate': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Select date', 'data-provide': 'datepicker'}),}
         
 
 class TakePresence(ModelForm):
@@ -95,25 +95,51 @@ class TakePresence(ModelForm):
         'companyAdrss': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Social Security Number..'}),
         'strtDate': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Social Security Number..'}),
         'endDate': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Social Security Number..'}),
-        'internshipDay': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Social Security Number..'}),
+        'internshipDay': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Select date', 'data-provide': 'datepicker'}),
         'workingHours': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Social Security Number..'}),
         'observation': forms.Textarea(attrs={'class': 'form-control','placeholder': 'Explain Theme of the intenrship..','rows':3, 'cols':5,'style': 'max-width: 100%; Height: 100px;overflow: auto;'}),
         'isPresent': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Social Security Number..'}),
 } 
 
 
+class CreateOfferForm(ModelForm):
+    Salary = forms.IntegerField(
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Monthly salary $..'})
+    )
+
+    class Meta:
+        model = InternOffer
+        fields = '__all__'
+        widgets = {
+            'companyAdrss': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Place address..'}),
+            'strtDate': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Select date', 'data-provide': 'datepicker'}),
+            'endDate': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Select date', 'data-provide': 'datepicker'}),
+            'companyName': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Company name..'}),
+            'theme': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Give your offer a title..'}),
+            'duree': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'intership full period', 'width': 15}),
+        }
+
+
+
 class Rating(ModelForm):
+    Rating = [
+        ('0', '0'),
+        ('1', '1'),
+        ('2', '2'),
+        ('3', '3'),
+        ('4', '4'),
+    ]
+    gnrlDiscipline = forms.ChoiceField(choices=Rating, widget=forms.Select(attrs={'class': 'form-control','placeholder': 'Explain Theme of the intenrship..',}))   
+    workAptitudes = forms.ChoiceField(choices=Rating, widget=forms.Select(attrs={'class': 'form-control'}))
+    initiative = forms.ChoiceField(choices=Rating, widget=forms.Select(attrs={'class': 'form-control'}))   
+    innovationAbilities = forms.ChoiceField(choices=Rating, widget=forms.Select(attrs={'class': 'form-control'}))   
+    knowledgeAcquired = forms.ChoiceField(choices=Rating, widget=forms.Select(attrs={'class': 'form-control'}))   
     class Meta:
         model = Marks
         fields = ['internMaster', 'workPlan', 'gnrlDiscipline', 'workAptitudes', 'initiative', 'innovationAbilities', 'knowledgeAcquired', 'Appreciation']
         widgets = {
         'internMaster': forms.Select(attrs={'class': 'form-control'}),
         'workPlan': forms.Textarea(attrs={'class': 'form-control','placeholder': 'Explain Theme of the intenrship..','rows':3, 'cols':5,'style': 'max-width: 100%; Height: 100px;overflow: auto;'}),
-        'gnrlDiscipline': forms.NumberInput(attrs={'class': 'form-control','placeholder': 'Rate out of /4..','min': 0,'max': 4,'step': 1}),
-        'workAptitudes': forms.NumberInput(attrs={'class': 'form-control','placeholder': 'Rate out of /4..','min': 0,'max': 4,'step': 1}),
-        'initiative': forms.NumberInput(attrs={'class': 'form-control','placeholder': 'Rate out of /4..','min': 0,'max': 4,'step': 1}),
-        'innovationAbilities': forms.NumberInput(attrs={'class': 'form-control','placeholder': 'Rate out of /4..','min': 0,'max': 4,'step': 1}),
-        'knowledgeAcquired': forms.NumberInput(attrs={'class': 'form-control','placeholder': 'Rate out of /4..','min': 0,'max': 4,'step': 1}),
         'Appreciation': forms.Textarea(attrs={'class': 'form-control','placeholder': 'Write Overall Appreciation..','rows':3, 'cols':5,'style': 'max-width: 100%; Height: 100px;overflow: auto;'}),} 
 
 

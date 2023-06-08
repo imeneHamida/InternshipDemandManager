@@ -52,6 +52,11 @@ def Aboutus(request):
     context = { }
     return render(request, "AboutUs.html", context)
 
+@unauthenticated_user
+def HowItWorks(request):
+    context = { }
+    return render(request, "HowItWorks.html", context)
+
 
 @allowed_users(allowed_roles=['univStudents'])
 @login_required(login_url='Signin')
@@ -130,20 +135,19 @@ def ApprovedBySupervisor(request, pk):
     apps = InternshipApp.objects.all()
     return render(request,"SupervisorHome.html",{'appslist' : apps})
 
-@allowed_users(allowed_roles=['Supervisor','admin'])
 @login_required(login_url='Signin')
 def ViewPresence(request, pk):
     supervisors = InternshipApp.objects.filter(internMaster = request.user)
     app = InternshipApp.objects.get(id=pk)
-    attendence = Attendence.objects.filter(intern=app.applicant)
+    attendence = Attendence.objects.filter(intern=app.applicant,internMaster=app.internMaster)
     return render(request,"viewnpresence.html",{'app' : app,'applist' : supervisors, 'attendence': attendence})
 
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['admin','univStudents'])
 @login_required(login_url='Signin')
 def ViewMarks(request, pk):
     supervisors = InternshipApp.objects.filter(internMaster = request.user)
     app = InternshipApp.objects.get(id=pk)
-    marks = Marks.objects.filter(intern=app.applicant)
+    marks = Marks.objects.filter(intern=app.applicant,internMaster=app.internMaster)
     return render(request,"viewMarks.html",{'app' : app,'applist' : supervisors, 'marks': marks})
 
 def render_to_pdf(request, pk):
@@ -394,57 +398,52 @@ def SupervisorHome(request):
 @allowed_users(allowed_roles=['Supervisor'])
 @login_required(login_url='Signin')
 def CreateOffer(request):
-    if request.method =='POST':
-        starting_date = request.POST.get('StartingDate')
-        ending_date = request.POST.get('EndingDate')
-        if starting_date > ending_date:
-            error_message = 'Starting date cannot be later than the ending date.'
-            context = {'error_message': error_message}
-            return render(request, 'CreateOffer.html', context)
-        else:
-            offer = InternOffer.objects.create(internMaster = request.user)
+    if request.method == 'POST':
+        form = CreateOfferForm(request.POST)
+        if form.is_valid():
+            offer = form.save(commit=False)
+            offer.internMaster = request.user
             offer.Sprvisorfullname = request.user.supervisor.fullname
             offer.Sprvisoremail = request.user.supervisor.email
             offer.SprvisorTel = request.user.supervisor.Tel
             offer.SprvisorFax = request.user.supervisor.Fax
-            offer.companyName = request.POST.get("CompanyName")
-            offer.companyAdrss = request.POST.get("CompanyAddress")
-            offer.theme = request.POST.get("Theme")
-            offer.duree = request.POST.get("duree")
-            offer.Salary = request.POST.get("Salary")
-            offer.strtDate = request.POST.get("StartingDate")
-            offer.endDate = request.POST.get("EndingDate")
             offer.save()
             return redirect('SupervisorHome')
-    context = {}
-    return render(request,"CreateOffer.html", context)
+    else:
+        form = CreateOfferForm()
+        error_message = 'unvalid data'
+    
+    context = {'form': form}
+    return render(request, "CreateOffer.html", context)
 
 @allowed_users(allowed_roles=['Supervisor'])
 @login_required(login_url='Signin')
 def EditOffer(request, pk):
-    offer = get_object_or_404(InternOffer, pk=pk)
-
+    offer = get_object_or_404(InternOffer, pk=pk, internMaster=request.user)
     if request.method == 'POST':
-        starting_date = request.POST.get('StartingDate')
-        ending_date = request.POST.get('EndingDate')
-        
-        if starting_date > ending_date:
-            error_message = 'Starting date cannot be later than the ending date.'
-            context = {'error_message': error_message, 'offer': offer}
-            return render(request, 'EditOffer.html', context)
-        
-        offer.companyName = request.POST.get("CompanyName")
-        offer.companyAdrss = request.POST.get("CompanyAddress")
-        offer.theme = request.POST.get("Theme")
-        offer.Salary = request.POST.get("Salary")
-        offer.strtDate = request.POST.get("StartingDate")
-        offer.endDate = request.POST.get("EndingDate")
-        offer.save()
-        
-        return redirect('SupervisorHome')
+        form = CreateOfferForm(request.POST, instance=offer)
+        if form.is_valid():
+            starting_date = form.cleaned_data['strtDate']
+            ending_date = form.cleaned_data['endDate']
+            
+            if starting_date > ending_date:
+                error_message = 'Starting date cannot be later than the ending date.'
+                context = {'error_message': error_message, 'offer': offer, 'form': form}
+                return render(request, 'CreateOffer.html', context)
+            else:
+                form.instance.internMaster = request.user
+                form.instance.Sprvisorfullname = request.user.supervisor.fullname
+                form.instance.Sprvisoremail = request.user.supervisor.email
+                form.instance.SprvisorTel = request.user.supervisor.Tel
+                form.instance.SprvisorFax = request.user.supervisor.Fax
+                form.instance.save()
+                return redirect('SupervisorHome')
+    else:
+        form = CreateOfferForm(instance=offer)
     
-    context = {'offer': offer}
+    context = {'offer': offer, 'form': form}
     return render(request, "CreateOffer.html", context)
+
 
 @allowed_users(allowed_roles=['Supervisor'])
 @login_required(login_url='Signin')
@@ -507,6 +506,24 @@ def internappform(request):
 
     context = {'form': form}
     return render(request, 'internAppForm.html', context)
+
+@unauthenticated_user
+def contact_us(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+
+        send_mail(
+            subject,
+            f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}",
+            settings.DEFAULT_FROM_EMAIL,
+            [settings.DEFAULT_FROM_EMAIL],
+            fail_silently=False,
+        )
+
+    return render(request, 'Home.html') 
 
 @allowed_users(allowed_roles=['univStudents'])
 @login_required(login_url='Signin')
@@ -595,31 +612,36 @@ def LogoutUser(request):
     context = { }
     return render(request, "Home.html", context)
 
-@unauthenticated_user
-def othersSignin(request):
+
+@login_required(login_url='Signin')
+@allowed_users(allowed_roles=['univStudents'])
+def VerifyCode(request):
     if request.method == 'POST':
-        username = request.POST.get('fullname')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-
-        # Handle login for admin and supervisor roles
-        if not (username and email and password):
-            messages.error(request, 'Please fill in all the required fields!')
+        entered_code = request.POST.get('Code')    
+        verification_obj = VerificationCode.objects.get(user=request.user)
+        if not (entered_code):
+            messages.error(request, 'Please fill in the required field!')
         else:
-            user = authenticate(request, username=username, email=email, password=password)
+            try:
+                if entered_code.strip() == verification_obj.code.strip():
+                    request.user.student.verifiedLogin = True
+                    request.user.student.save()
+                    return redirect('StudentHome')
 
-            if user is not None:
-                if not hasattr(user, 'student'):
-                    login(request, user)
-                    return redirect('StudentHome')  # Redirect to the appropriate admin/supervisor home page
                 else:
-                    messages.error(request, 'You are not authorized to sign in here as a student!')
-            else:
-                messages.error(request, 'Invalid credentials!')
+                    messages.error(request, 'Invalid verification code.')
+
+            except VerificationCode.DoesNotExist:
+                messages.error(request, 'Invalid verification code,please wait for administration approval')
 
     context = {}
-    return render(request, "othersSignIn.html", context)
+    return render(request, "VerificationCode.html", context)
 
+@login_required(login_url='Signin')
+@allowed_users(allowed_roles=['univStudents'])
+def VerificationPage(request):       
+    context = {}
+    return render(request, "VerificationCode.html", context)
 
 @unauthenticated_user
 def Signin(request):
@@ -629,40 +651,25 @@ def Signin(request):
         password = request.POST.get('password')
         user = User.objects.get(username=username)
         try:
-            
-            if hasattr(user, 'student'):
-                # Handle verification code for university students
-                try:
-                    verification_obj = VerificationCode.objects.get(user=user)
-                    entered_code = request.POST.get('verification_code')
-
-                    if entered_code == verification_obj.code:
-                        if not (username and email and password):
-                            messages.error(request, 'Please fill in all the required fields!')
-                        else:
-                            print("Username:", username)
-                            print("Email:", email)
-                            print("Password:", password)
-                            user = authenticate(request, username=username, email=email, password=password)
-                            print("User after authentication:", user)  # Add this line to print the user object
-
-                            if user is not None:
-                                login(request, user)
-                                return redirect('StudentHome')
-                            else:
-                                messages.error(request, 'Invalid credentials!')
-
-                    else:
-                        messages.error(request, 'Invalid verification code.')
-                        return redirect('Signin')
-
-                except VerificationCode.DoesNotExist:
-                    messages.error(request, 'Invalid verification code,please wait for administration approval')
-                    return redirect('Signin')
-
+            if not (username and email and password):
+                messages.error(request, 'Please fill in all the required fields!')
             else:
-                # Handle login for admin and supervisor roles
-                messages.error(request, 'your credentials does not match a student account')
+                user = authenticate(request, username=username, email=email, password=password)
+                if hasattr(user, 'student'):
+                    if user is not None:
+                        login(request, user)
+                        if user.student.verifiedLogin is not True:
+                            return redirect('VerificationPage')
+                        else:
+                            return redirect('StudentHome')
+                    else:
+                        messages.error(request, 'Invalid credentials!')
+                else:
+                    if user is not None:
+                        login(request, user)
+                        return redirect('StudentHome') 
+                    else:
+                        messages.error(request, 'Invalid credentials!')
 
         except User.DoesNotExist:
             messages.error(request, 'User does not exist.')

@@ -3,35 +3,7 @@
 {% block content %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-<style>
-  .swiper {
-  width: 600px;
-  height: 300px;
-}
-</style>
-<script>
-const swiper = new Swiper('.swiper', {
-  // Optional parameters
-  direction: 'vertical',
-  loop: true,
-
-  // If we need pagination
-  pagination: {
-    el: '.swiper-pagination',
-  },
-
-  // Navigation arrows
-  navigation: {
-    nextEl: '.swiper-button-next',
-    prevEl: '.swiper-button-prev',
-  },
-
-  // And if we need scrollbar
-  scrollbar: {
-    el: '.swiper-scrollbar',
-  },
-});
-</script>
+<link href="{% static '/js/main.js' %}" type="text/css" rel="stylesheet" >
 
 <section id="hero" class="hero d-flex align-items-center">
 
@@ -207,43 +179,6 @@ const swiper = new Swiper('.swiper', {
 
   </section><!-- End F.A.Q Section -->
 
-    <!-- ======= Clients Section ======= -->
-    <section id="clients" class="clients">
-
-        <div class="container" data-aos="fade-up">
-  
-          <header class="section-header">
-            <h2>Our Sponsors</h2>
-            <p>Our reliable partners</p>
-          </header>
-  
-          <!-- Slider main container -->
-          <div class="swiper">
-            <!-- Additional required wrapper -->
-            <div class="swiper-wrapper">
-              <!-- Slides with sponsor logos -->
-              <div class="swiper-slide"><img src="path/to/sponsor-logo1.jpg" alt="Sponsor 1"></div>
-              <div class="swiper-slide"><img src="path/to/sponsor-logo2.jpg" alt="Sponsor 2"></div>
-              <div class="swiper-slide"><img src="path/to/sponsor-logo3.jpg" alt="Sponsor 3"></div>
-              <!-- Add more slides with sponsor logos as needed -->
-            </div>
-          
-            <!-- If we need pagination -->
-            <div class="swiper-pagination"></div>
-          
-            <!-- If we need navigation buttons -->
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
-          
-            <!-- If we need scrollbar -->
-            <div class="swiper-scrollbar"></div>
-          </div>
-          
-          
-        </div>
-  
-      </section><!-- End Clients Section -->
-
       <!-- ======= Contact Section ======= -->
     <section id="contact" class="contact">
 
@@ -263,28 +198,28 @@ const swiper = new Swiper('.swiper', {
                   <div class="info-box">
                     <i class="bi bi-geo-alt"></i>
                     <h3>Address</h3>
-                    <p>A108 Adam Street,<br>New York, NY 535022</p>
+                    <p>Ali mendjli,<br>Constantine, Algeria</p>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="info-box">
                     <i class="bi bi-telephone"></i>
                     <h3>Call Us</h3>
-                    <p>+1 5589 55488 55<br>+1 6678 254445 41</p>
+                    <p>+213 7 82 15 46 22<br>+213 22 16 11 44</p>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="info-box">
                     <i class="bi bi-envelope"></i>
                     <h3>Email Us</h3>
-                    <p>info@example.com<br>contact@example.com</p>
+                    <p>ali.sahnoun@univ-constantine2.dz<br>elearning@univ-constantine2.dz</p>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="info-box">
                     <i class="bi bi-clock"></i>
-                    <h3>Open Hours</h3>
-                    <p>Monday - Friday<br>9:00AM - 05:00PM</p>
+                    <h3>Availibility</h3>
+                    <p>Everyday<br>9:00AM - 05:00PM</p><br>
                   </div>
                 </div>
               </div>
@@ -292,35 +227,30 @@ const swiper = new Swiper('.swiper', {
             </div>
   
             <div class="col-lg-6">
-              <form action="forms/contact.php" method="post" class="php-email-form">
+              <form action="{% url 'contact_us' %}" method="post" class="php-email-form">
+                {% csrf_token %}
                 <div class="row gy-4">
-  
-                  <div class="col-md-6">
-                    <input type="text" name="name" class="form-control" placeholder="Your Name" required>
-                  </div>
-  
-                  <div class="col-md-6 ">
-                    <input type="email" class="form-control" name="email" placeholder="Your Email" required>
-                  </div>
-  
-                  <div class="col-md-12">
-                    <input type="text" class="form-control" name="subject" placeholder="Subject" required>
-                  </div>
-  
-                  <div class="col-md-12">
-                    <textarea class="form-control" name="message" rows="6" placeholder="Message" required></textarea>
-                  </div>
-  
-                  <div class="col-md-12 text-center">
-                    <div class="loading">Loading</div>
-                    <div class="error-message"></div>
-                    <div class="sent-message">Your message has been sent. Thank you!</div>
-  
-                    <button type="submit">Send Message</button>
-                  </div>
-  
+                    <div class="col-md-6">
+                        <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="email" class="form-control" name="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" name="subject" placeholder="Subject" required>
+                    </div>
+                    <div class="col-md-12">
+                        <textarea class="form-control" name="message" rows="6" placeholder="Message" required></textarea>
+                    </div>
+                    <div class="col-md-12 text-center">
+                        <div class="loading">Loading</div>
+                        <div class="error-message"></div>
+                        <div class="sent-message">Your message has been sent. Thank you!</div>
+                        <button type="submit">Send Message</button>
+                    </div>
                 </div>
-              </form>
+            </form>
+            
   
             </div>
   

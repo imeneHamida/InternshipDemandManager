@@ -19,6 +19,27 @@ class VerificationCode(models.Model):
     def __str__(self):
         return str(self.user)
 
+class University(models.Model):
+    name = models.CharField(max_length=6)
+    addres = models.CharField(max_length=6)
+
+    def __str__(self):
+        return str(self.name)
+
+class Faculty(models.Model):
+    univ = models.OneToOneField(University, on_delete=models.CASCADE)
+    name = models.CharField(max_length=6)
+
+    def __str__(self):
+        return str(self.name)
+
+class Department(models.Model):
+    fac = models.OneToOneField(Faculty, on_delete=models.CASCADE)
+    name = models.CharField(max_length=6)
+
+    def __str__(self):
+        return str(self.name)
+
 class Student(models.Model):
     username = models.OneToOneField(User,null=True,blank=True, on_delete=models.CASCADE,related_name='student')
     approvedAccount = models.BooleanField(max_length=100,null=True,blank=True,default=False)
@@ -99,10 +120,10 @@ class Marks(models.Model):
 
 class InternOffer(models.Model):
     internMaster = models.ForeignKey(User,related_name="offerspr",null=True,blank=True,on_delete= models.SET_NULL)
-    Sprvisorfullname = models.CharField(max_length=100,null=True)
-    Sprvisoremail= models.EmailField(null=True)
-    SprvisorTel = models.IntegerField(null=True)
-    SprvisorFax = models.IntegerField(null=True)
+    Sprvisorfullname = models.CharField(max_length=100,null=True,blank=True)
+    Sprvisoremail= models.EmailField(null=True,blank=True)
+    SprvisorTel = models.IntegerField(null=True,blank=True)
+    SprvisorFax = models.IntegerField(null=True,blank=True)
     theme = models.CharField(max_length=100,null=True,blank=True)
     duree = models.CharField(max_length=100,null=True,blank=True)
     coverLetter = models.CharField(max_length=100,null=True,blank=True)
